@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "break-the-limit"
+version = "1.0.0"
+description = "Break-The-Limit — unified AI-powered bug bounty & security research toolkit (bughunter + cbh + skills)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Break-The-Limit Contributors" }]
+keywords = ["security", "bug-bounty", "recon", "pentest", "ai-agent", "vulnerability", "break-the-limit"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: POSIX",
+    "Environment :: Console",
+    "Topic :: Security",
+    "Intended Audience :: Developers",
+]
+dependencies = [
+    "requests>=2.32.3",
+    "mcp>=1.28",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.3.2"]
+
+[project.urls]
+Homepage = "https://github.com/SltnBM/Break-The-Limit"
+Repository = "https://github.com/SltnBM/Break-The-Limit"
+Issues = "https://github.com/SltnBM/Break-The-Limit/issues"
+
+[project.scripts]
+bughunter = "bughunter.__main__:main"
+bughunter-agent = "bughunter.__main__:agent_main"
+cbh = "cbh.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["bughunter*", "cbh*"]
+
+[tool.setuptools.package-data]
+bughunter = ["**/*"]
+cbh = ["data/*.json"]

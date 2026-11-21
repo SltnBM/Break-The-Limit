@@ -1,0 +1,29 @@
+{
+  "name": "break-the-limit",
+  "description": "AI-powered bug bounty toolkit — recon, vulnerability hunting, validation gates, and submission-ready reports for HackerOne, Bugcrowd, Intigriti, and Immunefi.",
+  "version": "6.0.1",
+  "author": {
+    "name": "Break-The-Limit",
+    "url": "https://Break-The-Limit.com"
+  },
+  "homepage": "https://github.com/SltnBM/Break-The-Limit",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SltnBM/Break-The-Limit.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "bug-bounty",
+    "security",
+    "recon",
+    "vulnerability-hunting",
+    "pentest",
+    "hackerone",
+    "bugcrowd",
+    "immunefi"
+  ],
+  "commands": "./commands",
+  "agents": "./bughunter/agents",
+  "skills": "./skills",
+  "hooks": "./hooks/hooks.json"
+}
