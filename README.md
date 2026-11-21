@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="MIT License"></a>
+  <a href="#license"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="MIT License"></a>
   <img src="https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/Skills-99-00C853.svg?style=flat-square" alt="99 Skills">
   <img src="https://img.shields.io/badge/Commands-43-7C4DFF.svg?style=flat-square" alt="43 Commands">
@@ -20,62 +20,45 @@
 
 ## Overview
 
-**Break-The-Limit** is a unified, terminal-native bug bounty hunting and offensive security research framework. It brings together:
+**Break-The-Limit** combines CLI automation, AI-assisted hunting, modular vulnerability playbooks, and MCP integrations into a single unified toolkit.
 
-- **`bughunter` CLI** — Interactive AI hunting assistant (`bughunter chat` with Phase 0–5 workflow, `--phase` / `--target` resume, network/tool execution, Google OAuth / Antigravity `agy`, Custom Providers, Ollama, Groq, OpenAI, Anthropic, and DeepSeek).
-- **`cbh` CLI & Engine** — Recon classification, triage, and reporting runner with ledger-backed state management.
-- **99 Specialized Security Skills (`skills/`)** — Modular playbooks covering Web2, API, GraphQL, Auth/OAuth/SAML/MFA, Cloud IAM (AWS/GCP/Azure), M365/Entra, Okta, Kubernetes, CI/CD, Mobile (APK/iOS), LLM/RAG/MCP security, Web3/DeFi, OSINT, and report writing.
-- **43 Slash Commands (`commands/`)** — Ready-to-use workflows (`/recon`, `/hunt`, `/validate`, `/report`, `/chain`, `/scope`, `/triage`, `/autopilot`, `/surface`, `/web3-audit`, and more).
-- **MCP Integrations (`mcp/`, `bughunter/mcp/`)** — Adapters for HackerOne, Burp Suite, Caido, and tool-policy enforcement.
+| Component | Description | Path |
+|---|---|---|
+| **`bughunter` CLI** | Interactive AI hunting assistant (`bughunter chat`), Phase 0–5 workflow, `--phase` / `--target` resume, OAuth & custom providers | [`bughunter/`](bughunter/) |
+| **`cbh` CLI & Engine** | Recon classification, triage, and reporting runner backed by a persistent ledger engine | [`cbh/`](cbh/), [`engine/`](engine/) |
+| **99 Security Skills** | Modular playbooks for Web2, API, GraphQL, Auth/OAuth/SAML/MFA, Cloud IAM, M365/Entra, Okta, K8s, CI/CD, Mobile, LLM/RAG/MCP, Web3 & OSINT | [`skills/`](skills/) |
+| **43 Slash Commands** | Ready-to-use workflows (`/recon`, `/hunt`, `/validate`, `/report`, `/chain`, `/scope`, `/triage`, `/autopilot`, `/surface`, `/web3-audit`) | [`commands/`](commands/) |
+| **MCP Integrations** | Adapters for HackerOne, Burp Suite, Caido, and tool-policy enforcement | [`mcp/`](mcp/), [`bughunter/mcp/`](bughunter/mcp/) |
+| **Automated Tests** | Unit & integration test suite (`pytest`, 1,216+ tests) | [`tests/`](tests/) |
 
 ---
 
 ## Quick Start
 
-### 1. Clone & Install
-
 ```bash
 git clone https://github.com/SltnBM/Break-The-Limit.git
 cd Break-The-Limit
 pip install -e ".[test]"
-```
 
-Optional: install harness skills/commands/agents for Claude Code, OpenCode, Pi, or Codex:
-
-```bash
+# Optional: install skills/commands/agents to Claude Code, OpenCode, Pi, or Codex
 chmod +x install.sh && ./install.sh
-```
-
-### 2. Configure Provider (`bughunter setup`)
-
-```bash
-bughunter setup
-```
-
-Supported providers include:
-- **Google OAuth / Antigravity (`agy`)** — Use your Gemini AI Pro subscription without an API key
-- **Custom Provider** — Point to any OpenAI-compatible endpoint (e.g. `9router`, local vLLM/LM Studio)
-- **Local / Cloud APIs** — Ollama, Groq, OpenRouter, DeepSeek, Anthropic, OpenAI
-
-Check available models anytime:
-
-```bash
-bughunter models
-```
-
-### 3. Start Hunting (`bughunter chat`)
-
-```bash
-# Interactive Phase 0-5 guided bug hunting
-bughunter chat
-
-# Jump directly to a specific phase and target
-bughunter chat --target example.com --phase 3
 ```
 
 ---
 
-## Structured Hunting Workflow (Phase 0 – Phase 5)
+## Usage Guide (Cara Pakai)
+
+| Command / Workflow | Purpose | Example |
+|---|---|---|
+| **Setup AI Provider** | Configure Google OAuth (`agy`), Custom Provider, or API keys | `bughunter setup` |
+| **Check Models** | List available models for the active provider | `bughunter models` |
+| **Interactive AI Hunt** | Start Phase 0–5 guided bug hunting chat with tool execution | `bughunter chat` |
+| **Resume by Phase** | Jump directly to a specific hunting phase (`0`–`5`) for a target | `bughunter chat --target example.com --phase 3` |
+| **Autonomous / CLI Hunt** | Run recon, surface ranking, or full pipeline from CLI | `bughunter hunt example.com` |
+| **`cbh` Runner** | Run `cbh` recon, classify, triage, and report commands | `cbh --help` |
+| **Run Test Suite** | Verify local installation and tools | `pytest -q` |
+
+### Structured Hunting Phases (Phase 0 – Phase 5)
 
 | Phase | Focus |
 |---|---|
@@ -85,6 +68,19 @@ bughunter chat --target example.com --phase 3
 | **Phase 3** | Targeted vulnerability hunting (IDOR, Auth/OAuth, SSRF, SQLi, XSS, Business Logic, etc.) |
 | **Phase 4** | Validation & 7-Question Gate (eliminate false positives before reporting) |
 | **Phase 5** | PoC bundling, CVSS 3.1 scoring, and submission-ready reporting |
+
+---
+
+## Supported AI Providers (AI Support)
+
+| Category | Provider | Auth / Setup | Default / Notes |
+|---|---|---|---|
+| **Google Subscription** | **Antigravity / Gemini OAuth (`agy`)** | Google OAuth (no API key) | `gemini-3.8-flash-medium` / `gemini-4-argon-high` / Claude via `agy` |
+| **Custom Endpoint** | **Custom Provider** | Custom Base URL + optional key | Works with `9router`, local vLLM, LM Studio, or any OpenAI-compatible API |
+| **Local (Zero Cost)** | **Ollama** | Local daemon (`ollama serve`) | Zero cost, runs local models (`qwen2.5`, `deepseek-r1`, etc.) |
+| **Cloud Free / Fast** | **Groq**, **Cerebras** | `GROQ_API_KEY`, `CEREBRAS_API_KEY` | Fast inference (`openai/gpt-oss-20b`, etc.) |
+| **Direct Model APIs** | **Gemini**, **Claude**, **OpenAI**, **DeepSeek**, **Grok**, **Mistral**, **Kimi** | Provider API Key | `gemini-3.8-flash-high`, `claude-sonnet`, `gpt-4o`, `deepseek-v4-flash` |
+| **Multi-Model Gateways** | **OpenRouter**, **OrcaRouter**, **Together**, **Perplexity**, **Requesty** | Gateway API Key | Route to multiple frontier & open-weight models |
 
 ---
 
@@ -107,22 +103,16 @@ Break-The-Limit/
 
 ---
 
-## Running Tests
+## Disclaimer
 
-```bash
-pytest -q
-```
-
----
-
-## License & Disclaimer
-
-### License
-Licensed under the **MIT License** — see [LICENSE](LICENSE).
-
-### Disclaimer
 **Break-The-Limit** is developed and provided **strictly for educational purposes, authorized bug bounty hunting, and legitimate security research**.
 
 - **No Liability:** The authors, maintainers, and contributors of **Break-The-Limit** are **not responsible or liable** for any misuse, damage, data loss, or illegal activities conducted using this toolkit or any of its components.
 - **Authorized Use Only:** You may only use this project against systems, applications, and networks for which you have **explicit, written authorization** or that fall strictly within an **approved bug bounty program scope**.
 - **User Responsibility:** End users are solely responsible for ensuring that their actions comply with all applicable local, national, and international laws and regulations.
+
+---
+
+## License
+
+Licensed under the **MIT License** — see [LICENSE](LICENSE).
