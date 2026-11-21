@@ -252,7 +252,7 @@
     <text x="0" y="0" fill="#22c55e">★ ORIGINAL</text>
     <text x="120" y="0" fill="#5a5a6a">= author-curated</text>
     <text x="280" y="0" fill="#3b82f6">VENDORED</text>
-    <text x="380" y="0" fill="#5a5a6a">= shuvonsec/claude-bug-bounty (MIT)</text>
+    <text x="380" y="0" fill="#5a5a6a">= Break-The-Limit Core (MIT)</text>
     <text x="1860" y="0" text-anchor="end" fill="#ff2d4f" font-weight="600">CAPABILITY MAP · END</text>
   </g>
 </svg>
