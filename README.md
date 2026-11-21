@@ -46,7 +46,7 @@ chmod +x install.sh && ./install.sh
 
 ---
 
-## Usage Guide (Cara Pakai)
+## Usage Guide
 
 | Command / Workflow | Purpose | Example |
 |---|---|---|
@@ -71,7 +71,7 @@ chmod +x install.sh && ./install.sh
 
 ---
 
-## Supported AI Providers (AI Support)
+## Supported AI Providers
 
 | Category | Provider | Auth / Setup | Default / Notes |
 |---|---|---|---|
