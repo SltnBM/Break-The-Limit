@@ -1,29 +1,20 @@
 <p align="center">
-  <img src="assets/banner.png" alt="Break-The-Limit — Unified AI-Powered Bug Bounty & Security Research Toolkit" width="100%"/>
+  <img src="assets/banner.png" alt="Break-The-Limit" width="100%"/>
 </p>
 
 <h1 align="center">Break-The-Limit</h1>
 
 <p align="center">
-  <b>Unified AI-powered bug bounty &amp; security research toolkit — recon to report, in your terminal.</b>
+  Terminal-native AI bug bounty &amp; security research toolkit — recon to report.
 </p>
 
 <p align="center">
-  <a href="#overview">Overview</a> ·
-  <a href="#quick-start">Quick Start</a> ·
-  <a href="#usage-guide">Usage Guide</a> ·
-  <a href="#supported-ai-providers">AI Providers</a> ·
-  <a href="#skill--command-coverage">Skills &amp; Commands</a> ·
-  <a href="#mcp-integrations">MCP</a> ·
-  <a href="#disclaimer">Disclaimer</a> ·
-  <a href="#license">License</a>
+  Authorized security testing only — see <a href="#disclaimer">Disclaimer</a>.
 </p>
 
 <p align="center">
-  <a href="#license"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="MIT License"></a>
+  <a href="#license"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+">
-  <img src="https://img.shields.io/badge/Skills-99-00C853.svg?style=flat-square" alt="99 Skills">
-  <img src="https://img.shields.io/badge/Commands-43-7C4DFF.svg?style=flat-square" alt="43 Commands">
   <a href="https://github.com/SltnBM/Break-The-Limit/actions/workflows/tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/SltnBM/Break-The-Limit/tests.yml?branch=main&style=flat-square&label=tests" alt="Tests"></a>
 </p>
 
@@ -31,128 +22,297 @@
 
 ## Overview
 
-**Break-The-Limit** unifies terminal-native security automation, an interactive AI hunting agent, 99 domain-specific vulnerability playbooks, and MCP proxy/platform integrations into a single cohesive framework.
+Break-The-Limit menggabungkan CLI agent interaktif, runner deterministik, playbook kerentanan, dan integrasi MCP dalam satu repositori.
 
-| Component | Role | Entry Point / Path |
+| Component | Fungsi | Path |
 |---|---|---|
-| **`bughunter` CLI** | Interactive AI hunting agent (`bughunter chat`), Phase 0–5 workflow, `--phase` / `--target` resume, OAuth & custom providers | [`bughunter/`](bughunter/) |
-| **`cbh` CLI & Engine** | Terminal-native recon, classification, triage, and report runner backed by a persistent ledger | [`cbh/`](cbh/), [`engine/`](engine/) |
-| **99 Security Skills** | Modular playbooks across Web2, API, GraphQL, Auth/OAuth/SAML, Cloud IAM, K8s, CI/CD, Mobile, LLM/MCP, Web3 & OSINT | [`skills/`](skills/) |
-| **43 Slash Commands** | Structured workflows (`/recon`, `/hunt`, `/validate`, `/report`, `/chain`, `/scope`, `/triage`, `/autopilot`, `/surface`, `/web3-audit`) | [`commands/`](commands/) |
-| **MCP Integrations** | Policy-enforced adapters for HackerOne, Burp Suite, Caido, and local research tools | [`mcp/`](mcp/), [`bughunter/mcp/`](bughunter/mcp/) |
-| **Automated Test Suite** | Cross-platform unit, schema, scope, and tool-path verification (`1,216 passed`) | [`tests/`](tests/) |
-
----
-
-## Architecture
-
-<p align="center">
-  <img src="assets/architecture-overview.svg" alt="Break-The-Limit Architecture Overview" width="95%"/>
-</p>
-
-1. **Orchestration Layer (`bughunter` & `cbh`):** Handles provider routing, scope enforcement, persistent per-target session state, and Phase 0–5 execution.
-2. **Knowledge & Playbook Layer (`skills/`, `commands/`, `rules/`):** Injects targeted bug-class methodologies, bypass tables, and validation gates into your AI harness or terminal agent.
-3. **Tooling & Integration Layer (`bughunter/tools/`, `scripts/`, `mcp/`):** Connects external scanners, HTTP proxies (Burp/Caido), and HackerOne intelligence with built-in rate limiting and redaction.
+| `bughunter` CLI | Agent hunting interaktif dan pipeline Phase 0–5 | [`bughunter/`](bughunter/) |
+| `cbh` CLI | Runner recon, klasifikasi, triage, dan laporan | [`cbh/`](cbh/) |
+| Ledger Engine | State management dan penyimpanan data hunt | [`engine/`](engine/) |
+| 99 Security Skills | Playbook kerentanan per domain target | [`skills/`](skills/) |
+| 42 Slash Commands | Alur kerja terstruktur untuk harness AI | [`commands/`](commands/) |
+| MCP Integrations | Adapter server MCP untuk proxy dan platform | [`bughunter/mcp/`](bughunter/mcp/) |
+| 1,216 Automated Tests | Verifikasi unit, skema, dan path tool | [`tests/`](tests/) |
 
 ---
 
 ## Quick Start
 
-### 1. Clone & Install Python Package
+Install paket Python, pasang skill ke harness pilihan, lalu konfigurasi provider AI dan verifikasi test suite.
 
 ```bash
 git clone https://github.com/SltnBM/Break-The-Limit.git
 cd Break-The-Limit
 pip install -e ".[test]"
-```
 
-### 2. Optional: Install Harness Skills (Claude Code / OpenCode / Pi / Codex)
-
-```bash
+# Opsional: pasang skill ke harness (Claude Code / OpenCode / Codex)
 chmod +x install.sh
-./install.sh                  # default install
-./install.sh --agent opencode # OpenCode (~/.config/opencode/)
-./install.sh --agent codex    # Codex (~/.codex/)
-./install.sh --agent all      # all supported harnesses
-```
+./install.sh --agent all
 
-### 3. Configure AI Provider
-
-```bash
+# Konfigurasi provider AI dan verifikasi instalasi
 bughunter setup
-bughunter models
+pytest -q
 ```
 
 ---
 
-## Usage Guide
+## Usage
 
-| Task | Command | Notes |
-|---|---|---|
-| **Configure Provider** | `bughunter setup` | Interactive setup for Google OAuth (`agy`), Custom Provider, or API keys |
-| **List Available Models** | `bughunter models` | Displays active provider and selectable models |
-| **Start Interactive Hunt** | `bughunter chat` | Launches the AI assistant with network/tool execution & Phase 0–5 workflow |
-| **Resume Target by Phase** | `bughunter chat --target example.com --phase 3` | Jumps directly to Phase `0`–`5` using saved per-target session state |
-| **Run CLI Hunt Pipeline** | `bughunter hunt example.com` | Automated recon, surface ranking, and lead-board ingestion |
-| **Run `cbh` Runner** | `cbh --help` | Recon classification, triage, and report generation |
-| **Run Test Suite** | `pytest -q` | Executes the full automated verification suite |
+### Core Commands
 
-### Structured Hunting Workflow (Phase 0 – Phase 5)
+Gunakan perintah berikut sesuai alur dari setup awal hingga verifikasi test.
 
-| Phase | Stage | Objective |
-|---|---|---|
-| **Phase 0** | **Scope** | Verify in-scope domains, wildcards, and out-of-scope exclusions before touching any asset |
-| **Phase 1** | **Reconnaissance** | Subdomain enumeration, live host probing, JS/endpoint extraction, and tech fingerprinting |
-| **Phase 2** | **Surface Ranking** | Prioritize high-yield endpoints, auth flows, APIs, and shadow/legacy surfaces |
-| **Phase 3** | **Targeted Hunting** | Test specific vulnerability classes (IDOR, Auth/OAuth, SSRF, SQLi, XSS, Business Logic, etc.) |
-| **Phase 4** | **Validation** | Pass the **7-Question Gate** & 4 pre-submission checks to eliminate false positives |
-| **Phase 5** | **PoC & Reporting** | Bundle reproducible evidence, compute CVSS 3.1, and generate submission-ready reports |
+| Task | Command |
+|---|---|
+| Konfigurasi provider AI | `bughunter setup` |
+| Lihat daftar model aktif | `bughunter models` |
+| Mulai sesi hunting interaktif | `bughunter chat` |
+| Lanjutkan target pada phase tertentu | `bughunter chat --target example.com --phase 3` |
+| Jalankan pipeline hunt otomatis | `bughunter hunt example.com` |
+| Jalankan runner CLI deterministik | `cbh --help` |
+| Jalankan seluruh test suite | `pytest -q` |
+
+### Phase 0–5 Workflow
+
+Sesi `bughunter chat` membagi proses audit menjadi enam tahap berurutan.
+
+| Phase | Tujuan |
+|---|---|
+| `0 · Scope` | Memverifikasi domain in-scope dan batasan program sebelum pengujian |
+| `1 · Reconnaissance` | Mengumpulkan subdomain, host aktif, endpoint, dan fingerprint teknologi |
+| `2 · Surface Ranking` | Memprioritaskan endpoint dan alur bernilai tinggi dari hasil recon |
+| `3 · Targeted Hunting` | Menguji celah spesifik pada target prioritas |
+| `4 · Validation` | Menyaring false positive melalui 7-Question Gate |
+| `5 · PoC & Reporting` | Menyusun bukti reproduksi dan draf laporan siap kirim |
 
 ---
 
 ## Supported AI Providers
 
-| Category | Provider | Authentication / Endpoint | Default / Notes |
-|---|---|---|---|
-| **Google Subscription** | **Antigravity / Gemini OAuth (`agy`)** | Google OAuth (no API key required) | `gemini-3.8-flash-medium`, `gemini-4-argon-high`, Claude via `agy` |
-| **Custom Endpoint** | **Custom Provider** | Custom Base URL + optional API key | Compatible with `9router`, local vLLM, LM Studio, or any OpenAI-compatible server |
-| **Local (Zero Cost)** | **Ollama** | Local daemon (`ollama serve`) | Runs local models (`qwen2.5`, `deepseek-r1`, etc.) offline |
-| **Cloud Free / Fast** | **Groq**, **Cerebras** | `GROQ_API_KEY`, `CEREBRAS_API_KEY` | Low-latency cloud inference (`openai/gpt-oss-20b`, etc.) |
-| **Direct Model APIs** | **Gemini**, **Claude**, **OpenAI**, **DeepSeek**, **Grok**, **Mistral**, **Kimi** | Provider API Key | `gemini-3.8-flash-high`, `claude-sonnet`, `gpt-4o`, `deepseek-v4-flash` |
-| **Multi-Model Gateways** | **OpenRouter**, **OrcaRouter**, **Together**, **Perplexity**, **Requesty** | Gateway API Key | Unified routing across multiple frontier and open-weight models |
+Pilih provider lokal, OAuth, API key, gateway, atau endpoint kustom; lihat daftar model terverifikasi di [Supported AI Models](docs/supported-models.md).
+
+### Subscription / OAuth
+
+| Provider | Auth | Catatan |
+|---|---|---|
+| `antigravity` (`agy`) | OAuth | Gemini AI Pro via Google OAuth |
+| `gemini-oauth` | OAuth | Kredensial Google OAuth CLI |
+
+### Local
+
+| Provider | Auth | Catatan |
+|---|---|---|
+| `ollama` | Local | Gratis, offline via `OLLAMA_HOST` |
+
+### Cloud API
+
+| Provider | Auth | Catatan |
+|---|---|---|
+| `groq` | API key | `GROQ_API_KEY`, free tier cepat |
+| `cerebras` | API key | `CEREBRAS_API_KEY`, inferensi berkecepatan tinggi |
+| `deepseek` | API key | `DEEPSEEK_API_KEY`, model V4 hemat biaya |
+| `gemini` | API key | `GEMINI_API_KEY`, Google Gemini API |
+| `claude` | API key | `ANTHROPIC_API_KEY`, Anthropic Claude API |
+| `openai` | API key | `OPENAI_API_KEY`, OpenAI API |
+| `grok` | API key | `XAI_API_KEY`, xAI Grok API |
+| `kimi` | API key | `MOONSHOT_API_KEY`, Moonshot AI API |
+| `mistral` | API key | `MISTRAL_API_KEY`, Mistral AI API |
+| `together` | API key | `TOGETHER_API_KEY`, model open-weight cloud |
+| `perplexity` | API key | `PERPLEXITY_API_KEY`, pencarian web terintegrasi |
+
+### Gateway & Custom
+
+| Provider | Auth | Catatan |
+|---|---|---|
+| `openrouter` | API key | `OPENROUTER_API_KEY`, multi-model gateway |
+| `orcarouter` | API key | `ORCAROUTER_API_KEY`, multi-model gateway |
+| `fluxion` | API key | `FLUXION_API_KEY`, multi-model gateway |
+| `requesty` | API key | `REQUESTY_API_KEY`, multi-model gateway |
+| `litellm` | API key | `LITELLM_API_KEY`, gateway 100+ provider |
+| `custom` | Custom URL | `CUSTOM_BASE_URL`, OpenAI-compatible server |
 
 ---
 
-## Skill & Command Coverage
+## Skills & Commands
 
-| Domain | Included Skills (`skills/`) |
-|---|---|
-| **Core Methodology & Triage** | `bb-methodology`, `bug-bounty`, `triage-validation`, `report-writing`, `bugcrowd-reporting`, `evidence-hygiene`, `redteam-mindset`, `redteam-report-template` |
-| **Web & API Exploitation** | `hunt-idor`, `hunt-ssrf`, `hunt-sqli`, `hunt-nosqli`, `hunt-xss`, `hunt-csrf`, `hunt-cors`, `hunt-rce`, `hunt-lfi`, `hunt-xxe`, `hunt-ssti`, `hunt-deserialization`, `hunt-http-smuggling`, `hunt-cache-poison`, `hunt-race-condition`, `hunt-business-logic`, `hunt-graphql`, `hunt-fintech-graphql`, `hunt-grpc`, `hunt-websocket`, `hunt-shadow-api`, `hunt-spa-api` |
-| **Auth, Identity & SSO** | `hunt-ato`, `hunt-auth-bypass`, `hunt-oauth`, `hunt-saml`, `hunt-jwt-crypto`, `hunt-mfa-bypass`, `hunt-session`, `hunt-forgot-password`, `m365-entra-attack`, `okta-attack` |
-| **Cloud, Infra & CI/CD** | `hunt-cloud-misconfig`, `cloud-iam-deep`, `hunt-k8s`, `hunt-cicd`, `supply-chain-attack-recon`, `enterprise-vpn-attack`, `vmware-vcenter-attack`, `hunt-sharepoint`, `hunt-aspnet`, `hunt-laravel`, `hunt-springboot`, `hunt-nextjs`, `hunt-nodejs` |
-| **AI / LLM & Web3** | `hunt-llm-ai`, `hunt-rag-vector`, `web3-audit`, `meme-coin-audit` |
-| **Mobile & OSINT** | `apk-redteam-pipeline`, `ios-redteam-pipeline`, `offensive-osint`, `osint-methodology`, `web2-recon`, `recon-scope-triage`, `jsmax` |
+### Skills (99)
+
+Playbook dikelompokkan ke dalam enam domain keamanan.
+
+| Domain | Jumlah | Contoh |
+|---|---|---|
+| Methodology & Reporting | 14 | `bb-methodology`, `triage-validation`, `report-writing`, `evidence-hygiene`, [semua →](skills/) |
+| Web & API | 37 | `hunt-idor`, `hunt-ssrf`, `hunt-sqli`, `hunt-xss`, [semua →](skills/) |
+| Auth & Identity | 13 | `hunt-ato`, `hunt-oauth`, `hunt-saml`, `hunt-jwt-crypto`, [semua →](skills/) |
+| Cloud, Infra & Stacks | 18 | `hunt-cloud-misconfig`, `cloud-iam-deep`, `hunt-k8s`, `hunt-cicd`, [semua →](skills/) |
+| AI, LLM & Web3 | 9 | `hunt-llm-ai`, `mcp-server-audit`, `web3-audit`, `meme-coin-audit`, [semua →](skills/) |
+| Mobile & OSINT | 8 | `apk-redteam-pipeline`, `ios-redteam-pipeline`, `osint-methodology`, `web2-recon`, [semua →](skills/) |
 
 <details>
-<summary><b>View all 43 Slash Commands (<code>commands/</code>)</b></summary>
+<summary>Methodology &amp; Reporting (14)</summary>
 
-| Command | Purpose | Command | Purpose |
-|---|---|---|---|
-| `/recon` | Full recon pipeline | `/hunt` | Start targeted hunting |
-| `/validate` | Run 7-Question Gate | `/report` | Generate submission-ready report |
-| `/chain` | Build A→B→C exploit chains | `/scope` | Verify asset against scope |
-| `/scope-aggregate` | Aggregate program scope | `/triage` | Quick finding triage |
-| `/surface` | Rank attack surface | `/pickup` | Resume previous hunt |
-| `/autopilot` | Autonomous hunt loop | `/remember` | Save finding to hunt memory |
-| `/intel` | Fetch CVE & disclosure intel | `/memory-gc` | Rotate/clean hunt memory |
-| `/secrets-hunt` | Scan JS/bundles for secrets | `/takeover` | Check subdomain takeover |
-| `/cloud-recon` | S3/Azure/GCP & origin recon | `/param-discover` | Hidden HTTP param discovery |
-| `/bypass-403` | 403/401 bypass checks | `/scan-cves` | Focused Nuclei CVE sweep |
-| `/graphql-audit` | Full GraphQL security audit | `/web3-audit` | Smart contract audit |
-| `/token-scan` | Token/meme coin rug-pull scan | `/arsenal` | List installed external tools |
-| `/wordlist-gen` | Target-specific wordlists | `/osint-employees` | Employee OSINT (opt-in) |
-| `/breach-check` | HIBP k-anonymity check | `/spray` | Guarded password spray |
+| Skill | Skill |
+|---|---|
+| `bb-local-toolkit` | `mid-engagement-ir-detection` |
+| `bb-methodology` | `omni-killchain` |
+| `bug-bounty` | `redteam-mindset` |
+| `bug-chaining` | `redteam-report-template` |
+| `bugcrowd-reporting` | `report-writing` |
+| `evidence-hygiene` | `security-arsenal` |
+| `hunt-dispatch` | `triage-validation` |
+
+</details>
+
+<details>
+<summary>Web &amp; API (37)</summary>
+
+| Skill | Skill |
+|---|---|
+| `client-reverse` | `hunt-idor` |
+| `graphql-audit` | `hunt-ldap` |
+| `hunt-api-misconfig` | `hunt-lfi` |
+| `hunt-business-logic` | `hunt-misc` |
+| `hunt-cache-poison` | `hunt-nosqli` |
+| `hunt-captcha-bypass` | `hunt-open-redirect` |
+| `hunt-clickjacking` | `hunt-race-condition` |
+| `hunt-cors` | `hunt-rce` |
+| `hunt-csrf` | `hunt-shadow-api` |
+| `hunt-deserialization` | `hunt-spa-api` |
+| `hunt-dom` | `hunt-sqli` |
+| `hunt-exceptional-conditions` | `hunt-ssrf` |
+| `hunt-file-upload` | `hunt-ssti` |
+| `hunt-fintech-graphql` | `hunt-websocket` |
+| `hunt-graphql` | `hunt-xss` |
+| `hunt-grpc` | `hunt-xxe` |
+| `hunt-host-header` | `jsmax` |
+| `hunt-html-injection` | `web2-vuln-classes` |
+| `hunt-http-smuggling` | |
+
+</details>
+
+<details>
+<summary>Auth &amp; Identity (13)</summary>
+
+| Skill | Skill |
+|---|---|
+| `credential-attack` | `hunt-ntlm-info` |
+| `hunt-ato` | `hunt-oauth` |
+| `hunt-auth-bypass` | `hunt-saml` |
+| `hunt-brute-force` | `hunt-session` |
+| `hunt-forgot-password` | `m365-entra-attack` |
+| `hunt-jwt-crypto` | `okta-attack` |
+| `hunt-mfa-bypass` | |
+
+</details>
+
+<details>
+<summary>Cloud, Infra &amp; Stacks (18)</summary>
+
+| Skill | Skill |
+|---|---|
+| `cicd-security` | `hunt-laravel` |
+| `cloud-iam-deep` | `hunt-nextjs` |
+| `cloud-pentest` | `hunt-nodejs` |
+| `enterprise-vpn-attack` | `hunt-sharepoint` |
+| `hunt-aspnet` | `hunt-source-leak` |
+| `hunt-cicd` | `hunt-springboot` |
+| `hunt-cloud-misconfig` | `hunt-subdomain` |
+| `hunt-k8s` | `hunt-tls-network` |
+| `supply-chain-attack-recon` | `vmware-vcenter-attack` |
+
+</details>
+
+<details>
+<summary>AI, LLM &amp; Web3 (9)</summary>
+
+| Skill | Skill |
+|---|---|
+| `agentic-app-audit` | `llm-redteam` |
+| `argus` | `mcp-server-audit` |
+| `hunt-llm-ai` | `meme-coin-audit` |
+| `hunt-rag-vector` | `web3-audit` |
+| `johnwick` | |
+
+</details>
+
+<details>
+<summary>Mobile &amp; OSINT (8)</summary>
+
+| Skill | Skill |
+|---|---|
+| `apk-redteam-pipeline` | `osint-methodology` |
+| `ios-redteam-pipeline` | `pii-hunter` |
+| `mobile-pentest` | `recon-scope-triage` |
+| `offensive-osint` | `web2-recon` |
+
+</details>
+
+### Commands (42)
+
+Dua belas slash command utama ditunjukkan di bawah ini, dan daftar lengkap 42 command tersedia di bagian lipat.
+
+| Kategori | Command | Fungsi |
+|---|---|---|
+| Recon | `/recon` | Jalankan pipeline recon lengkap |
+| Recon | `/scope` | Verifikasi aset terhadap scope program |
+| Recon | `/surface` | Urutkan prioritas attack surface target |
+| Hunt | `/hunt` | Jalankan pengujian kerentanan aktif |
+| Hunt | `/autopilot` | Jalankan loop hunt otomatis |
+| Hunt | `/chain` | Rangkai beberapa temuan menjadi eskalasi |
+| Validate & Report | `/validate` | Jalankan 7-Question Gate pada temuan |
+| Validate & Report | `/triage` | Evaluasi cepat kelayakan temuan |
+| Validate & Report | `/report` | Buat draf laporan siap kirim |
+| Utilities | `/pickup` | Lanjutkan sesi hunt sebelumnya |
+| Web3 & OSINT | `/web3-audit` | Audit smart contract Solidity/Rust |
+| Web3 & OSINT | `/token-scan` | Pindai risiko rug pull token |
+
+<details>
+<summary>Daftar lengkap 42 Slash Commands (<code>commands/</code>)</summary>
+
+| Kategori | Command | Fungsi |
+|---|---|---|
+| Recon | `/recon` | Jalankan pipeline recon lengkap |
+| Recon | `/scope` | Verifikasi aset terhadap scope program |
+| Recon | `/scope-aggregate` | Kumpulkan scope dari berbagai platform |
+| Recon | `/surface` | Urutkan prioritas attack surface target |
+| Recon | `/cloud-recon` | Cari bucket publik dan origin IP |
+| Recon | `/param-discover` | Temukan parameter HTTP tersembunyi |
+| Recon | `/secrets-hunt` | Pindai kebocoran kredensial di kode |
+| Recon | `/takeover` | Periksa kandidat subdomain takeover |
+| Recon | `/portscan` | Pindai port layanan pada target |
+| Recon | `/intel` | Ambil data CVE dan laporan publik |
+| Hunt | `/hunt` | Jalankan pengujian kerentanan aktif |
+| Hunt | `/autopilot` | Jalankan loop hunt otomatis |
+| Hunt | `/chain` | Rangkai beberapa temuan menjadi eskalasi |
+| Hunt | `/bypass-403` | Uji teknik bypass HTTP 403/401 |
+| Hunt | `/cors` | Pindai kesalahan konfigurasi CORS |
+| Hunt | `/crlf` | Uji CRLF dan host header injection |
+| Hunt | `/domxss` | Konfirmasi DOM XSS di browser |
+| Hunt | `/jwt-scan` | Analisis dan uji token JWT offline |
+| Hunt | `/nosqli` | Pindai celah injeksi NoSQL |
+| Hunt | `/oob` | Korelasi callback out-of-band interactsh |
+| Hunt | `/scan-cves` | Sapuan template Nuclei untuk CVE |
+| Hunt | `/sast` | Jalankan aturan Semgrep pada source |
+| Hunt | `/llm-app-audit` | Audit black-box aplikasi agen AI |
+| Hunt | `/llm-redteam` | Uji prompt injection dan jailbreak |
+| Hunt | `/spray` | Password spray dengan pengaman lockout |
+| Validate & Report | `/validate` | Jalankan 7-Question Gate pada temuan |
+| Validate & Report | `/triage` | Evaluasi cepat kelayakan temuan |
+| Validate & Report | `/verify` | Verifikasi ulang bundle PoC secara independen |
+| Validate & Report | `/report` | Buat draf laporan siap kirim |
+| Validate & Report | `/poc` | Susun template bukti reproduksi PoC |
+| Validate & Report | `/screenshot` | Ambil tangkapan layar daftar host aktif |
+| Validate & Report | `/remember` | Simpan temuan ke memori hunt |
+| Utilities | `/arsenal` | Daftar tool eksternal yang terpasang |
+| Utilities | `/dashboard` | Buka dashboard lokal hasil hunt |
+| Utilities | `/memory-gc` | Rotasi dan bersihkan log memori |
+| Utilities | `/oracle` | Urutkan prioritas lead berbasis histori |
+| Utilities | `/pickup` | Lanjutkan sesi hunt sebelumnya |
+| Web3 & OSINT | `/web3-audit` | Audit smart contract Solidity/Rust |
+| Web3 & OSINT | `/token-scan` | Pindai risiko rug pull token |
+| Web3 & OSINT | `/wordlist-gen` | Buat wordlist khusus dari situs target |
+| Web3 & OSINT | `/osint-employees` | Kumpulkan OSINT nama dan email karyawan |
+| Web3 & OSINT | `/breach-check` | Cek wordlist terhadap API HIBP |
 
 </details>
 
@@ -160,11 +320,15 @@ bughunter models
 
 ## MCP Integrations
 
-| Integration | Purpose | Path |
+Server dan klien MCP berikut menghubungkan agent ke proxy HTTP serta API platform bug bounty.
+
+| Integration | Fungsi | Path |
 |---|---|---|
-| **Break-The-Limit MCP** | Policy-enforced MCP server with redaction and tool gating | [`bughunter/mcp/bughunter-mcp/`](bughunter/mcp/bughunter-mcp/) |
-| **HackerOne MCP** | Query Hacktivity, program policies, and scope metadata | [`mcp/hackerone/`](mcp/hackerone/), [`bughunter/mcp/hackerone-mcp/`](bughunter/mcp/hackerone-mcp/) |
-| **Burp Suite & Caido MCP** | Proxy request/response inspection and replay bridges | [`bughunter/mcp/burp-mcp-client/`](bughunter/mcp/burp-mcp-client/), [`bughunter/mcp/caido-mcp-client/`](bughunter/mcp/caido-mcp-client/) |
+| Break-The-Limit MCP | Server MCP lokal dengan redaksi otomatis | [`bughunter/mcp/bughunter-mcp/`](bughunter/mcp/bughunter-mcp/) |
+| Burp Suite MCP Client | Klien bridge untuk proxy Burp Suite | [`bughunter/mcp/burp-mcp-client/`](bughunter/mcp/burp-mcp-client/) |
+| Caido MCP Client | Klien bridge untuk proxy Caido | [`bughunter/mcp/caido-mcp-client/`](bughunter/mcp/caido-mcp-client/) |
+| HackerOne MCP | Helper API publik HackerOne dan Hacktivity | [`bughunter/mcp/hackerone-mcp/`](bughunter/mcp/hackerone-mcp/) |
+| HackerOne MCP Adapter | Adapter MCP tambahan untuk HackerOne | [`mcp/hackerone/`](mcp/hackerone/) |
 
 ---
 
@@ -172,39 +336,31 @@ bughunter models
 
 ```text
 Break-The-Limit/
-├── bughunter/       # Core bughunter CLI, chat agent, OAuth/providers, tools, memory, MCP
-├── cbh/             # cbh CLI package for recon/classify/triage/report
-├── engine/          # Ledger & state engine
-├── skills/          # 99 domain-specific security & hunting skills
-├── commands/        # 43 slash command workflows
-├── hooks/           # Harness hooks
-├── rules/           # Always-active hunting & reporting rules
-├── mcp/             # MCP server adapters
-├── scripts/         # Utility & bootstrap scripts
-├── docs/            # Architecture, CLI, verification & methodology documentation
-└── tests/           # Automated test suite (pytest)
-```
-
----
-
-## Running Tests
-
-```bash
-pytest -q
+├── bughunter/       # Core CLI, chat agent, OAuth/providers, tools, memory, MCP
+├── cbh/             # Terminal-native deterministic CLI runner
+├── engine/          # State & ledger engine
+├── skills/          # 99 domain-specific security playbooks
+├── commands/        # 42 slash command definitions (+ README.md)
+├── hooks/           # Harness lifecycle hooks
+├── rules/           # Hunting & reporting rules
+├── mcp/             # Standalone MCP adapters
+├── scripts/         # Installers & helper scripts
+├── docs/            # Guides, schemas & model catalog
+└── tests/           # 1,216 automated tests (pytest)
 ```
 
 ---
 
 ## Disclaimer
 
-**Break-The-Limit** is developed and provided **strictly for educational purposes, authorized bug bounty hunting, and legitimate security research**.
+Break-The-Limit dikembangkan dan disediakan hanya untuk tujuan edukasi, bug bounty resmi, dan riset keamanan yang sah.
 
-- **No Liability:** The authors, maintainers, and contributors of **Break-The-Limit** are **not responsible or liable** for any misuse, damage, data loss, or illegal activities conducted using this toolkit or any of its components.
-- **Authorized Use Only:** You may only use this project against systems, applications, and networks for which you have **explicit, written authorization** or that fall strictly within an **approved bug bounty program scope**.
-- **User Responsibility:** End users are solely responsible for ensuring that their actions comply with all applicable local, national, and international laws and regulations.
+- **No Liability:** Penulis dan kontributor tidak bertanggung jawab atas penyalahgunaan, kerusakan sistem, kehilangan data, atau aktivitas ilegal yang dilakukan menggunakan perangkat lunak ini.
+- **Authorized Use Only:** Perangkat ini hanya boleh digunakan terhadap sistem, aplikasi, dan jaringan yang memiliki izin tertulis resmi atau termasuk dalam cakupan program bug bounty yang sah.
+- **User Responsibility:** Pengguna bertanggung jawab penuh memastikan seluruh aktivitas mematuhi hukum dan peraturan yang berlaku.
 
 ---
 
 ## License
 
-Licensed under the **MIT License** — see [LICENSE](LICENSE).
+Licensed under the MIT License — see [LICENSE](LICENSE).
