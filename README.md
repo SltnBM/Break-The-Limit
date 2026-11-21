@@ -117,6 +117,12 @@ pytest -q
 
 ## License & Disclaimer
 
+### License
 Licensed under the **MIT License** — see [LICENSE](LICENSE).
 
-> **Authorized Testing Only:** Break-The-Limit is built for authorized bug bounty hunting, security research, and penetration testing within explicitly approved scope. Never test targets without permission.
+### Disclaimer
+**Break-The-Limit** is developed and provided **strictly for educational purposes, authorized bug bounty hunting, and legitimate security research**.
+
+- **No Liability:** The authors, maintainers, and contributors of **Break-The-Limit** are **not responsible or liable** for any misuse, damage, data loss, or illegal activities conducted using this toolkit or any of its components.
+- **Authorized Use Only:** You may only use this project against systems, applications, and networks for which you have **explicit, written authorization** or that fall strictly within an **approved bug bounty program scope**.
+- **User Responsibility:** End users are solely responsible for ensuring that their actions comply with all applicable local, national, and international laws and regulations.
