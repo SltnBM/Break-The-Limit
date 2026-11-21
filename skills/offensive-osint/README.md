@@ -82,9 +82,9 @@ The full content lives in this `SKILL.md` (or in `docs/full-skills/offensive-osi
 [`scripts/secret_scan.py`](scripts/secret_scan.py) — stdlib-only Python scanner mirroring the §17 secret-pattern catalog. Run standalone:
 
 ```bash
-python3 scripts/secret_scan.py path/to/repo/        # scan a directory tree
-python3 scripts/secret_scan.py file1 file2 file3    # scan specific files
-cat my.log | python3 scripts/secret_scan.py         # pipe stdin
+python3 skills/offensive-osint/scripts/secret_scan.py path/to/repo/        # scan a directory tree
+python3 skills/offensive-osint/scripts/secret_scan.py file1 file2 file3    # scan specific files
+cat my.log | python3 skills/offensive-osint/scripts/secret_scan.py         # pipe stdin
 ```
 
 Output: JSONL — one finding per line — `jq`-friendly.

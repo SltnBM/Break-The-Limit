@@ -19,7 +19,7 @@ When given a file containing JS URLs:
 1.  **Initialize**: Create a temporary directory for downloads (e.g., `./jsmax_downloads`).
 2.  **Fetch in Batches**: Use `scripts/fetch_js.py` to download JS files.
     ```bash
-    python scripts/fetch_js.py <url_list_file> ./jsmax_downloads 10 <offset>
+    python skills/jsmax/scripts/fetch_js.py <url_list_file> ./jsmax_downloads 10 <offset>
     ```
     - Script outputs: `PROGRESS|START|offset|end|total`, `SUCCESS|url|path`, `FAILURE|url|reason`, and `PROGRESS|END|end|total`.
 3.  **Iterate**: Continue incrementing the `<offset>` by the batch size until `end == total`.
