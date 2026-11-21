@@ -42,13 +42,13 @@ def test_standalone_install_succeeds(tmp_path):
 
     assert "unbound variable" not in proc.stderr, proc.stderr
     assert proc.returncode == 0, proc.stderr
-    assert (bin_dir / "bughunter").is_symlink()
+    assert (bin_dir / "breach").is_symlink()
 
 
 def test_standalone_install_links_to_engine(tmp_path):
     bin_dir = tmp_path / "bin"
     _run("install.sh", ["--agent", "standalone"], bin_dir)
-    assert os.path.realpath(bin_dir / "bughunter") == \
+    assert os.path.realpath(bin_dir / "breach") == \
         os.path.realpath(os.path.join(REPO, "bughunter", "engine.py"))
 
 
@@ -57,18 +57,18 @@ def test_standalone_install_is_idempotent(tmp_path):
     _run("install.sh", ["--agent", "standalone"], bin_dir)
     proc = _run("install.sh", ["--agent", "standalone"], bin_dir)
     assert proc.returncode == 0, proc.stderr
-    assert (bin_dir / "bughunter").is_symlink()
+    assert (bin_dir / "breach").is_symlink()
 
 
 def test_standalone_uninstall_removes_the_command(tmp_path):
     bin_dir = tmp_path / "bin"
     _run("install.sh", ["--agent", "standalone"], bin_dir)
-    assert (bin_dir / "bughunter").is_symlink()
+    assert (bin_dir / "breach").is_symlink()
 
     proc = _run("uninstall.sh", ["--agent", "standalone", "--yes"], bin_dir)
     assert "unbound variable" not in proc.stderr, proc.stderr
     assert proc.returncode == 0, proc.stderr
-    assert not (bin_dir / "bughunter").exists()
+    assert not (bin_dir / "breach").exists()
 
 
 @pytest.mark.parametrize("script", ["install.sh", "uninstall.sh", "install_tools.sh"])

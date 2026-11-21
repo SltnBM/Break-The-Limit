@@ -308,10 +308,10 @@ install_standalone() {
     # Make engine.py executable
     chmod +x "$engine"
 
-    # ── Install bughunter system command ──────────────────────────────────────
+    # ── Install breach system command ─────────────────────────────────────────
     # Prefer updating the currently active managed installation. This prevents
     # an old /usr/local/bin entry from shadowing a new ~/.local/bin symlink.
-    existing_cmd="$(command -v bughunter 2>/dev/null || true)"
+    existing_cmd="$(command -v breach 2>/dev/null || true)"
     if [ -n "${BBHUNTER_BIN_DIR:-}" ]; then
         bin_dir="$BBHUNTER_BIN_DIR"
     elif [ -n "$existing_cmd" ] && [[ -e "$existing_cmd" || -L "$existing_cmd" ]]; then
@@ -330,7 +330,7 @@ install_standalone() {
         bin_dir="$HOME/.local/bin"
     fi
 
-    target="$bin_dir/bughunter"
+    target="$bin_dir/breach"
     action="Installed"
     if [ -e "$target" ] || [ -L "$target" ]; then
         action="Updated"
@@ -356,7 +356,7 @@ install_standalone() {
         echo "[!] Could not install or update $target" >&2
         echo "    Try: sudo ./install.sh --agent standalone" >&2
         echo "    Or add this to ~/.bashrc / ~/.zshrc:"
-        echo "    alias bughunter='python3 $engine'"
+        echo "    alias breach='python3 $engine'"
         return 1
     fi
 
@@ -395,12 +395,12 @@ install_standalone() {
     echo "════════════════════════════════════════════════════"
     echo "  Done! Type from anywhere:"
     echo ""
-    echo "    bughunter setup"
-    echo "    bughunter models"
-    echo "    bughunter recon target.com"
-    echo "    bughunter hunt  target.com"
-    echo "    bughunter validate \"<finding>\""
-    echo "    bughunter chat"
+    echo "    breach setup"
+    echo "    breach models"
+    echo "    breach recon target.com"
+    echo "    breach hunt  target.com"
+    echo "    breach validate \"<finding>\""
+    echo "    breach chat"
     echo "════════════════════════════════════════════════════"
     echo ""
 }

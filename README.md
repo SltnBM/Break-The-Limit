@@ -43,7 +43,12 @@ Install paket Python, pasang skill ke harness pilihan, lalu konfigurasi provider
 ```bash
 git clone https://github.com/SltnBM/Break-The-Limit.git
 cd Break-The-Limit
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e ".[test]"
+
+# Alternatif global tanpa virtualenv:
+# ./install.sh --agent standalone
 
 # Opsional: pasang skill ke harness (Claude Code / OpenCode / Codex)
 chmod +x install.sh

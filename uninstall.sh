@@ -221,11 +221,11 @@ uninstall_standalone() {
     if [ -n "${BBHUNTER_BIN_DIR:-}" ]; then
         # Explicit override is intentionally exclusive, which also makes
         # packaging/integration tests unable to touch a real installation.
-        candidates+=("$BBHUNTER_BIN_DIR/bughunter")
+        candidates+=("$BBHUNTER_BIN_DIR/breach")
     else
-        active="$(command -v bughunter 2>/dev/null || true)"
+        active="$(command -v breach 2>/dev/null || true)"
         [ -n "$active" ] && candidates+=("$active")
-        candidates+=("/usr/local/bin/bughunter" "$HOME/.local/bin/bughunter")
+        candidates+=("/usr/local/bin/breach" "$HOME/.local/bin/breach")
     fi
 
     for candidate in "${candidates[@]}"; do
