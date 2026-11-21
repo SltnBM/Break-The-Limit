@@ -1086,22 +1086,22 @@ def _print_banner():
 def main():
     argv = _normalize_cli_argv(sys.argv[1:])
     parser = argparse.ArgumentParser(
-        prog="engine.py",
-        description="Standalone BugHunter Engine — works without Claude Code",
+        prog="breach",
+        description="Break-The-Limit CLI (breach) — works without Claude Code",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""
         Free setup (zero subscription):
           curl -fsSL https://ollama.ai/install.sh | sh
           ollama pull qwen2.5:14b
-          ./engine.py setup
-          ./engine.py recon target.com
+          breach setup
+          breach recon target.com
 
         Free cloud (Groq — very fast):
           export GROQ_API_KEY=gsk_...
-          ./engine.py recon target.com
+          breach recon target.com
 
         Switch providers anytime:
-          ./engine.py setup
+          breach setup
         """),
     )
     parser.add_argument("--provider", "-p",

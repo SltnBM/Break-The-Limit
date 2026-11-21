@@ -26,7 +26,7 @@ Break-The-Limit menggabungkan CLI agent interaktif, runner deterministik, playbo
 
 | Component | Fungsi | Path |
 |---|---|---|
-| `bughunter` CLI | Agent hunting interaktif dan pipeline Phase 0–5 | [`bughunter/`](bughunter/) |
+| `breach` CLI | Agent hunting interaktif dan pipeline Phase 0–5 | [`bughunter/`](bughunter/) |
 | `cbh` CLI | Runner recon, klasifikasi, triage, dan laporan | [`cbh/`](cbh/) |
 | Ledger Engine | State management dan penyimpanan data hunt | [`engine/`](engine/) |
 | 99 Security Skills | Playbook kerentanan per domain target | [`skills/`](skills/) |
@@ -50,7 +50,7 @@ chmod +x install.sh
 ./install.sh --agent all
 
 # Konfigurasi provider AI dan verifikasi instalasi
-bughunter setup
+breach setup
 pytest -q
 ```
 
@@ -64,17 +64,17 @@ Gunakan perintah berikut sesuai alur dari setup awal hingga verifikasi test.
 
 | Task | Command |
 |---|---|
-| Konfigurasi provider AI | `bughunter setup` |
-| Lihat daftar model aktif | `bughunter models` |
-| Mulai sesi hunting interaktif | `bughunter chat` |
-| Lanjutkan target pada phase tertentu | `bughunter chat --target example.com --phase 3` |
-| Jalankan pipeline hunt otomatis | `bughunter hunt example.com` |
+| Konfigurasi provider AI | `breach setup` |
+| Lihat daftar model aktif | `breach models` |
+| Mulai sesi hunting interaktif | `breach chat` |
+| Lanjutkan target pada phase tertentu | `breach chat --target example.com --phase 3` |
+| Jalankan pipeline hunt otomatis | `breach hunt example.com` |
 | Jalankan runner CLI deterministik | `cbh --help` |
 | Jalankan seluruh test suite | `pytest -q` |
 
 ### Phase 0–5 Workflow
 
-Sesi `bughunter chat` membagi proses audit menjadi enam tahap berurutan.
+Sesi `breach chat` membagi proses audit menjadi enam tahap berurutan.
 
 | Phase | Tujuan |
 |---|---|

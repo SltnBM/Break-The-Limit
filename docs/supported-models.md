@@ -16,7 +16,7 @@ Model berikut terdaftar di `ANTIGRAVITY_MODEL_LABELS` pada [`bughunter/tools/goo
 Untuk melihat daftar model live dari CLI `agy`, jalankan:
 
 ```bash
-bughunter models
+breach models
 ```
 
 ## Default Models per Provider

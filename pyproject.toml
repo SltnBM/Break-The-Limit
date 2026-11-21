@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "break-the-limit"
 version = "1.0.0"
-description = "Break-The-Limit — unified AI-powered bug bounty & security research toolkit (bughunter + cbh + skills)."
+description = "Break-The-Limit — unified AI-powered bug bounty & security research toolkit (breach + cbh + skills)."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -33,8 +33,8 @@ Repository = "https://github.com/SltnBM/Break-The-Limit"
 Issues = "https://github.com/SltnBM/Break-The-Limit/issues"
 
 [project.scripts]
-bughunter = "bughunter.__main__:main"
-bughunter-agent = "bughunter.__main__:agent_main"
+breach = "bughunter.__main__:main"
+breach-agent = "bughunter.__main__:agent_main"
 cbh = "cbh.cli:main"
 
 [tool.setuptools]
