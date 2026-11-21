@@ -145,15 +145,15 @@ COMMAND_ALIASES = {
 
 def _print_quick_help():
     print(textwrap.dedent("""
-    BugHunter — fast commands
+    Break-The-Limit (breach) — fast commands
 
-    bughunter help                 Show full help
-    bughunter setup                Configure your AI provider
-    bughunter recon target.com     Map the attack surface
-    bughunter hunt target.com      Run the full hunt pipeline
-    bughunter validate "finding"   Run the 7-Question Gate
-    bughunter report               Write a submission-ready report
-    bughunter status               Show pipeline status
+    breach help                 Show full help
+    breach setup                Configure your AI provider
+    breach recon target.com     Map the attack surface
+    breach hunt target.com      Run the full hunt pipeline
+    breach validate "finding"   Run the 7-Question Gate
+    breach report               Write a submission-ready report
+    breach status               Show pipeline status
 
     Short aliases:
       init=setup   p=providers   m=models   s=status   r=recon
@@ -419,7 +419,7 @@ def cmd_setup(args):
                     saved_models = cfg.get("models", {})
                     current = saved_models.get("ollama") if isinstance(saved_models, dict) else None
                     default_index = models.index(current) + 1 if current in models else 1
-                    print("\nChoose the Ollama model BugHunter should use:\n")
+                    print("\nChoose the Ollama model Break-The-Limit should use:\n")
                     for index, model_name in enumerate(models, start=1):
                         marker = " (current)" if model_name == current else ""
                         print(f"  {index}) {model_name}{marker}")
@@ -446,7 +446,7 @@ def cmd_setup(args):
                 if current:
                     current = resolve_antigravity_model(current)
                 default_index = models.index(current) + 1 if current in models else 1
-                print("\nChoose the Antigravity / Gemini model BugHunter should use:\n")
+                print("\nChoose the Antigravity / Gemini model Break-The-Limit should use:\n")
                 for index, model_name in enumerate(models, start=1):
                     label = ANTIGRAVITY_MODEL_LABELS.get(model_name, "")
                     label_str = f" — {label}" if label else ""
@@ -468,7 +468,7 @@ def cmd_setup(args):
             current = saved_models.get("custom") if isinstance(saved_models, dict) else None
             if models:
                 default_index = models.index(current) + 1 if current in models else 1
-                print("\nChoose the Custom Endpoint model BugHunter should use:\n")
+                print("\nChoose the Custom Endpoint model Break-The-Limit should use:\n")
                 for index, model_name in enumerate(models, start=1):
                     marker = " (current)" if model_name == current else ""
                     print(f"  {index:>2}) {model_name}{marker}")
@@ -553,7 +553,7 @@ def cmd_login(args):
             info(f"Tier: {tier} | Project: {proj}")
             info(f"Credentials file: {creds.get('_source_path', BUGHUNTER_OAUTH_FILE)}")
         else:
-            warn("Not logged in with Google OAuth. Run: bughunter login")
+            warn("Not logged in with Google OAuth. Run: breach login")
         return
 
     no_browser = bool(getattr(args, "no_browser", False))
@@ -653,7 +653,7 @@ def cmd_providers(args):
         print(f"  {BOLD}{prov:<14}{NC} {tier[prov]:<16} {status:<32} {DIM}{note}{NC}{marker}")
 
     print(f"\n  Config: {CONFIG}")
-    print(f"  Change: ./engine.py setup\n")
+    print(f"  Change: breach setup\n")
 
 
 def cmd_models(args):
@@ -662,7 +662,7 @@ def cmd_models(args):
     provider = getattr(args, "provider", None) or cfg.get("provider")
     client = _get_client(provider)
     if not client.available:
-        err(f"Provider '{client.provider}' not available. Run: ./engine.py setup")
+        err(f"Provider '{client.provider}' not available. Run: breach setup")
         return
     models = client.list_models()
     info(f"Provider: {client.description}")
@@ -718,7 +718,7 @@ def cmd_recon(args):
     if result:
         print(f"\n{result}")
     else:
-        warn("AI analysis returned no output — check provider with: ./engine.py providers")
+        warn("AI analysis returned no output — check provider with: breach providers")
 
 
 def cmd_hunt(args):
@@ -798,7 +798,7 @@ def cmd_report(args):
             findings_dir = str(targets[-1])
             info(f"Using findings dir: {findings_dir}")
         else:
-            err("No findings dir found. Use: ./engine.py report --findings-dir findings/<target>")
+            err("No findings dir found. Use: breach report --findings-dir findings/<target>")
             sys.exit(1)
 
     header("Report Writer")
@@ -844,7 +844,7 @@ def cmd_chain(args):
     system = load_agent_prompt("chain-builder")
     client = _get_client()
     if not client.available:
-        err("No AI provider available. Run: ./engine.py setup")
+        err("No AI provider available. Run: breach setup")
         sys.exit(1)
     sys.path.insert(0, str(HERE))
     from brain import BRAIN_SYSTEM  # noqa: PLC0415
@@ -856,10 +856,10 @@ def cmd_chain(args):
 
 def cmd_chat(args):
     """Interactive agentic Q&A shell with network, web search, file, and shell tools."""
-    header("BugHunter Chat (Agentic)")
+    header("Break-The-Limit Chat (Agentic)")
     client = _get_client()
     if not client.available:
-        err("No AI provider available. Run: ./engine.py setup")
+        err("No AI provider available. Run: breach setup")
         sys.exit(1)
 
     sys.path.insert(0, str(HERE))
@@ -986,7 +986,7 @@ def cmd_chat(args):
             if target:
                 save_chat_session(target, phase, history)
         else:
-            warn("No response — check provider with: ./engine.py providers")
+            warn("No response — check provider with: breach providers")
 
 
 def cmd_status(args):
@@ -1023,7 +1023,7 @@ def cmd_status(args):
         model_note = f" | model: {model}" if model else " | model: automatic"
         print(f"{GREEN}{client.description}{model_note}{NC}")
     else:
-        print(f"{RED}not configured{NC} — run: ./engine.py setup")
+        print(f"{RED}not configured{NC} — run: breach setup")
     print()
 
 

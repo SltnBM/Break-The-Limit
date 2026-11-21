@@ -25,7 +25,7 @@ PHASE_DESCRIPTIONS = {
 
 CHAT_SESSIONS_DIR = Path.home() / ".bughunter" / "chat_sessions"
 
-CHAT_AGENT_SYSTEM = """You are BugHunter AI, an expert Bug Bounty & Penetration Testing assistant running inside the user's terminal.
+CHAT_AGENT_SYSTEM = """You are Break-The-Limit AI, an expert Bug Bounty & Penetration Testing assistant running inside the user's terminal.
 You DO have real network access, web search, HTTP request capability, local file access, and shell command execution via tools.
 Never claim "I have no network access" — use your tools whenever you need live data, CVE research, recon, or endpoint testing.
 
@@ -142,7 +142,7 @@ def tool_http_fetch(
         return "Error: url is required"
     method = (method or "GET").upper()
     req_headers = dict(headers) if isinstance(headers, dict) else {}
-    req_headers.setdefault("User-Agent", "BugHunter-Chat/1.0")
+    req_headers.setdefault("User-Agent", "Break-The-Limit-Chat/1.0")
 
     kwargs: dict = {"headers": req_headers, "timeout": 20, "allow_redirects": True}
     if data is not None:

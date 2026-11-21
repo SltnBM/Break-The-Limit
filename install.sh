@@ -41,14 +41,14 @@ Defaults:
   ./install.sh                    Install for Claude Code globally
 
 Standalone (no subscription needed):
-  ./install.sh --agent standalone Install or update the 'bughunter' system command
+  ./install.sh --agent standalone Install or update the 'breach' system command
   ./install.sh --agent mcp        Print MCP client config + install mcp Python SDK hint
                                   After install, type from anywhere:
-                                    bughunter help
-                                    bughunter setup
-                                    bughunter login
-                                    bughunter recon target.com
-                                    bughunter h target.com
+                                    breach help
+                                    breach setup
+                                    breach login
+                                    breach recon target.com
+                                    breach h target.com
 
 Examples:
   ./install.sh --agent antigravity Install Antigravity / Gemini skills, rules & agents globally (~/.gemini/config)
@@ -289,14 +289,14 @@ install_antigravity() {
     echo "Antigravity discovers skills & rules in ~/.gemini/config (global) or .agents/ (project)."
     echo "Start hunting with Antigravity / Gemini AI Pro:"
     echo "  agy"
-    echo "  bughunter setup --provider antigravity"
-    echo "  bughunter login"
+    echo "  breach setup --provider antigravity"
+    echo "  breach login"
 }
 
 install_standalone() {
     echo ""
     echo "════════════════════════════════════════════════════"
-    echo "  BugHunter Standalone Engine (no subscription)"
+    echo "  Break-The-Limit Standalone Engine (no subscription)"
     echo "════════════════════════════════════════════════════"
     echo ""
 
@@ -412,11 +412,11 @@ install_mcp() {
     echo ""
     echo "Server entry:"
     echo "  python3 $MCP_SRC/bughunter-mcp/server.py"
-    echo "  # or: bughunter mcp serve   (after standalone install)"
+    echo "  # or: breach mcp serve   (after standalone install)"
     echo ""
     echo "Doctor / tool catalog:"
-    echo "  bughunter mcp doctor"
-    echo "  bughunter mcp tools"
+    echo "  breach mcp doctor"
+    echo "  breach mcp tools"
     echo ""
     echo "Python SDK:"
     echo "  pip install 'mcp>=2.2.0'"

@@ -478,7 +478,7 @@ class LLMClient:
                 "Authorization": f"Bearer {key}",
                 "Content-Type": "application/json",
                 "HTTP-Referer": "https://github.com/SltnBM/Break-The-Limit",
-                "X-Title": "BugHunter",
+                "X-Title": "Break-The-Limit",
             })
             self._api_base   = "https://openrouter.ai/api/v1"
             self.available   = True
@@ -495,7 +495,7 @@ class LLMClient:
                 "Authorization": f"Bearer {key}",
                 "Content-Type": "application/json",
                 "HTTP-Referer": "https://github.com/SltnBM/Break-The-Limit",
-                "X-Title": "BugHunter",
+                "X-Title": "Break-The-Limit",
             })
             self._api_base   = "https://api.orcarouter.ai/v1"
             self.available   = True
@@ -511,7 +511,7 @@ class LLMClient:
                 "Authorization": f"Bearer {key}",
                 "Content-Type": "application/json",
                 "HTTP-Referer": "https://github.com/SltnBM/Break-The-Limit",
-                "X-Title": "BugHunter",
+                "X-Title": "Break-The-Limit",
             })
             self._api_base   = "https://fluxionai.world/v1"
             self.available   = True
@@ -528,7 +528,7 @@ class LLMClient:
                 "Authorization": f"Bearer {key}",
                 "Content-Type": "application/json",
                 "HTTP-Referer": "https://github.com/SltnBM/Break-The-Limit",
-                "X-Title": "BugHunter",
+                "X-Title": "Break-The-Limit",
             })
             self._api_base   = (os.environ.get("REQUESTY_BASE_URL", "")
                                 or "https://router.requesty.ai/v1").rstrip("/")
@@ -739,7 +739,7 @@ class LLMClient:
             raise RuntimeError(
                 f"{self.provider} returned HTTP 404 for model '{m}'. The model "
                 f"id is likely retired/decommissioned. List current models with "
-                f"`bughunter models` or GET {base}/models, then set BRAIN_MODEL "
+                f"`breach models` or GET {base}/models, then set BRAIN_MODEL "
                 f"to a supported one."
             )
         r.raise_for_status()

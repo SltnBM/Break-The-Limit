@@ -14,12 +14,12 @@ This does **not** replace:
 pip install break-the-limit
 ```
 
-That installs the `bughunter` command. The MCP server runs as `bughunter mcp serve`,
+That installs the `breach` command. The MCP server runs as `breach mcp serve`,
 so the same config works from any directory in any MCP-compatible agent.
 
 ```bash
-bughunter mcp doctor   # verify SDK, tools, and paths
-bughunter mcp tools    # list the exposed tool catalog
+breach mcp doctor   # verify SDK, tools, and paths
+breach mcp tools    # list the exposed tool catalog
 ```
 
 ## Clients
