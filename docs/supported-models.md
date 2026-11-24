@@ -1,10 +1,10 @@
 # Supported AI Models
 
-Daftar model default dan katalog model yang terverifikasi langsung dari kode (`bughunter/brain.py` dan `bughunter/tools/google_oauth.py`).
+Verified default models and catalog labels sourced directly from [`bughunter/brain.py`](../bughunter/brain.py) and [`bughunter/tools/google_oauth.py`](../bughunter/tools/google_oauth.py).
 
 ## Antigravity / Gemini OAuth (`agy`)
 
-Model berikut terdaftar di `ANTIGRAVITY_MODEL_LABELS` pada [`bughunter/tools/google_oauth.py`](../bughunter/tools/google_oauth.py):
+The following models are defined in `ANTIGRAVITY_MODEL_LABELS` in [`bughunter/tools/google_oauth.py`](../bughunter/tools/google_oauth.py):
 
 - `gemini-4-argon-high`, `gemini-4-argon-medium`, `gemini-4-argon-low`
 - `gemini-4-hydrogen-xhigh`, `gemini-4-hydrogen-high`, `gemini-4-hydrogen-medium`, `gemini-4-hydrogen-low`
@@ -13,7 +13,7 @@ Model berikut terdaftar di `ANTIGRAVITY_MODEL_LABELS` pada [`bughunter/tools/goo
 - `claude-opus-5-5-high`, `claude-opus-5-5-medium`, `claude-opus-5-5-low`
 - `gpt-oss-120b-medium`
 
-Untuk melihat daftar model live dari provider aktif, jalankan:
+To list live models from your active provider, run:
 
 ```bash
 breach models
@@ -21,14 +21,14 @@ breach models
 
 ## Default Models per Provider
 
-Model default berikut terdaftar di `LLMClient.DEFAULT_MODELS` pada [`bughunter/brain.py`](../bughunter/brain.py):
+The following defaults are registered in `LLMClient.DEFAULT_MODELS` in [`bughunter/brain.py`](../bughunter/brain.py):
 
 | Provider | Env Var / Endpoint | Default Model |
 |---|---|---|
 | `antigravity` (`agy`) | Google OAuth | `gemini-3.8-flash-medium` |
 | `gemini-oauth` | Google OAuth CLI | `gemini-3.8-flash-medium` |
-| `9router` / `custom` | `CUSTOM_BASE_URL` | Diambil otomatis dari `GET /v1/models` atau input manual |
-| `ollama` | `OLLAMA_HOST` | Diambil otomatis dari daemon lokal |
+| `9router` / `custom` | `CUSTOM_BASE_URL` | Auto-discovered via `GET /v1/models` or user-specified |
+| `ollama` | `OLLAMA_HOST` | Auto-discovered from local Ollama daemon |
 | `groq` | `GROQ_API_KEY` | `openai/gpt-oss-20b` |
 | `cerebras` | `CEREBRAS_API_KEY` | `llama3.3-70b` |
 | `deepseek` | `DEEPSEEK_API_KEY` | `deepseek-v4-flash` |

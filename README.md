@@ -22,23 +22,23 @@
 
 ## Overview
 
-Break-The-Limit (`breach`) adalah toolkit offensive security dan bug bounty di terminal dengan injeksi playbook taktis (`breach skills`), router multi-provider (termasuk `9Router`, endpoint gratisan/lokal, dan Google OAuth), serta proteksi *Untrusted Output Delimiter* terhadap *indirect prompt injection* dari target.
+Break-The-Limit (`breach`) is a terminal-native AI offensive security and bug bounty toolkit featuring native tactical playbook injection (`breach skills`), a multi-provider LLM router (including `9Router`, free/community OpenAI-compatible endpoints, local Ollama, and Google OAuth), and built-in **Untrusted Output Delimiter** protection against indirect prompt injection from target responses.
 
-| Component | Fungsi | Path |
+| Component | Purpose | Path |
 |---|---|---|
-| `breach` CLI | Dispatcher utama untuk setup, chat interaktif, recon, hunt, dan report | [`bughunter/engine.py`](bughunter/engine.py) |
-| Native Skill Engine | Loader yang menginjeksi 25 playbook taktis langsung ke sesi AI | [`bughunter/tools/skill_loader.py`](bughunter/tools/skill_loader.py) |
-| Interactive Agentic Shell | Shell `breach chat` dengan eksekusi HTTP, pencarian CVE, dan shell lokal | [`bughunter/tools/chat_agent.py`](bughunter/tools/chat_agent.py) |
-| Multi-Provider Brain | Klien LLM untuk OAuth, `9Router`, endpoint kustom/gratis, lokal, dan cloud | [`bughunter/brain.py`](bughunter/brain.py) |
-| 25 Tactical Skills | Playbook eksploitasi Web, API, Logic, 0-Day Killchain, Cloud, Mobile, dan Web3 | [`skills/`](skills/) |
-| 42 Slash Commands | Alur kerja terstruktur untuk harness eksternal | [`commands/`](commands/) |
-| MCP Bridges | Server MCP lokal serta adapter Burp Suite, Caido, dan HackerOne | [`bughunter/mcp/`](bughunter/mcp/) |
+| `breach` CLI | Primary dispatcher for setup, interactive chat, recon, active hunting, validation, and reporting | [`bughunter/engine.py`](bughunter/engine.py) |
+| Native Skill Engine | Loader that injects 25 tactical offensive playbooks directly into live AI sessions | [`bughunter/tools/skill_loader.py`](bughunter/tools/skill_loader.py) |
+| Interactive Agentic Shell | Free-form `breach chat` shell with HTTP probing, CVE lookup, local shell execution, and prompt-injection delimiters | [`bughunter/tools/chat_agent.py`](bughunter/tools/chat_agent.py) |
+| Multi-Provider Brain | Unified LLM client supporting Google OAuth, `9Router`, custom/free endpoints, local models, and cloud APIs | [`bughunter/brain.py`](bughunter/brain.py) |
+| 25 Tactical Skills | Offensive playbooks across Web, API, Business Logic, 0-Day Killchain, Cloud, Mobile, AI/MCP, and Web3 | [`skills/`](skills/) |
+| 42 Slash Commands | Structured workflow templates for external agent harnesses | [`commands/`](commands/) |
+| MCP Bridges | Local MCP server plus Burp Suite, Caido, and HackerOne integrations | [`bughunter/mcp/`](bughunter/mcp/) |
 
 ---
 
 ## Quick Start
 
-Gunakan virtual environment atau installer standalone agar `breach` langsung aktif di sistem.
+Install inside a Python virtual environment or use the standalone installer to register `breach` globally on your system.
 
 ```bash
 git clone https://github.com/SltnBM/Break-The-Limit.git
@@ -47,10 +47,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[test]"
 
-# Alternatif global tanpa virtualenv:
+# Optional standalone global install (without manual venv activation):
 # ./install.sh --agent standalone
 
-# Konfigurasi provider AI (9Router / Custom / Google OAuth / Ollama / Groq)
+# Configure your AI provider (9Router / Custom / Google OAuth / Ollama / Groq)
 breach setup
 breach chat
 ```
@@ -61,74 +61,86 @@ breach chat
 
 ### Core CLI Commands
 
-Gunakan perintah berikut untuk mengatur provider, memuat skill, dan menjalankan pengujian.
+Use the `breach` CLI to configure providers, inspect or inject tactical skills, and execute recon or hunting workflows.
 
 | Task | Command |
 |---|---|
-| Konfigurasi provider AI (termasuk `9Router` / Custom URL) | `breach setup` |
-| Setup cepat `9Router` lokal | `breach setup --provider 9router` |
-| Lihat daftar model pada provider aktif | `breach models` |
-| Lihat katalog 25 tactical skills | `breach skills` |
-| Rekomendasikan skill berdasarkan sinyal target | `breach skills recommend graphql` |
-| Mulai sesi hunting & diskusi cybersec interaktif | `breach chat` |
-| Mulai chat dengan injeksi playbook spesifik | `breach chat --skill js-deep-miner,zero-day-killchain` |
-| Jalankan pipeline recon & hunt otomatis | `breach hunt example.com` |
+| Configure AI provider (interactive wizard, including `9Router` & Custom URLs) | `breach setup` |
+| Quick setup for a local `9Router` instance (`http://localhost:20128/v1`) | `breach setup --provider 9router` |
+| List available models on the active provider | `breach models` |
+| List all 25 tactical offensive skills | `breach skills` |
+| Recommend skills based on target signals (e.g., `graphql`, `jwt`, `nextjs`) | `breach skills recommend graphql` |
+| Launch the interactive offensive security chat agent | `breach chat` |
+| Launch chat pre-loaded with specific tactical playbooks | `breach chat --skill js-deep-miner,zero-day-killchain` |
+| Run the automated recon and vulnerability hunting pipeline | `breach hunt example.com` |
+| Validate a finding through the 7-Question Gate | `breach validate "IDOR on /api/v2/orders/{id}"` |
+| Generate a platform-ready bug bounty report | `breach report` |
 
 ### In-Chat Slash Commands (`breach chat`)
 
-Di dalam `breach chat`, AI berjalan dalam mode taktis bebas (tidak mengunci ke tahapan kaku) dan dapat dikontrol langsung dengan perintah berikut.
+Inside `breach chat`, the AI operates in a direct, zero-lecture offensive mode by default (without rigid phase locking) and responds to live slash commands.
 
-| In-Chat Command | Fungsi |
+| In-Chat Command | Description |
 |---|---|
-| `/skill <name>` | Muat playbook taktis (misal `/skill zero-day-killchain`) ke sesi aktif |
-| `/skill clear` | Lepas seluruh skill dari konteks sesi |
-| `/skills` | Tampilkan skill yang sedang aktif dan daftar 25 skill yang tersedia |
-| `/target <domain>` | Muat data `recon/<target>` dan `findings/<target>` ke sesi chat |
-| `/phase <0-5\|off>` | Kunci fokus ke Phase `0`–`5` tertentu, atau `off` untuk mode bebas |
-| `/auto` | Aktifkan atau matikan auto-approve eksekusi tool (`http_fetch`, `run_command`) |
-| `/clear` | Bersihkan riwayat percakapan sesi saat ini |
+| `/skill <name>` | Inject a tactical playbook (e.g., `/skill zero-day-killchain`) into the active session |
+| `/skill clear` | Unload all injected skills from the current session context |
+| `/skills` | Show currently loaded skills and list all 25 available playbooks |
+| `/target <domain>` | Load `recon/<target>` and `findings/<target>` artifacts into the active session |
+| `/phase <0-5\|off>` | Lock focus to a specific hunting phase (`0`–`5`), or set `off` for unrestricted tactical mode |
+| `/auto` | Toggle automatic approval for tool executions (`http_fetch`, `run_command`, `web_search`, `read_file`) |
+| `/clear` | Clear the current conversation history |
+
+---
+
+## Security Architecture & Operator Control
+
+Break-The-Limit is engineered to keep full control in the hands of the human operator while defending the AI agent against malicious target responses:
+
+- **Direct Tactical Mode:** `breach chat` treats the user as an authorized operator—no scope paperwork prompts, no compliance lectures, and no mandatory phase gates unless explicitly enabled via `--phase` or `/phase`.
+- **Untrusted Output Delimiter (`prompt_safety.py`):** Every HTTP response (`http_fetch`), shell output (`run_command`), web search result (`web_search`), file read (`read_file`), and recon summary is wrapped in randomized `<untrusted_target_output_XXXXXXXX>` boundaries with role-takeover neutralizing filters so target servers cannot hijack the AI agent via indirect prompt injection.
+- **Interactive Tool Approval (`[Y/n/a]`):** Every active command or HTTP request displays the exact command/URL and waits for operator confirmation before execution (or runs hands-free when `--auto` / `/auto` is enabled).
 
 ---
 
 ## Supported AI Providers
 
-Konfigurasi melalui `breach setup`; daftar model default lengkap tersedia di [Supported AI Models](docs/supported-models.md).
+Configure any provider via `breach setup`. Full default model mappings are documented in [Supported AI Models](docs/supported-models.md).
 
 ### Custom, Community & Free Routers
 
-| Provider | Auth | Catatan |
+| Provider | Auth | Notes |
 |---|---|---|
-| `9router` | Custom URL | Preset `http://localhost:20128/v1`, auto-fetch daftar model |
-| `custom` | Custom URL | Mendukung provider gratis/komunitas, `vLLM`, `LM Studio`, atau endpoint OpenAI-compatible |
+| `9router` | Custom URL | Built-in preset for `http://localhost:20128/v1` with automatic `/v1/models` discovery |
+| `custom` | Custom URL | Supports any free/community OpenAI-compatible provider, `LM Studio`, `vLLM`, `llama.cpp`, or self-hosted gateway |
 
 ### Subscription / OAuth & Local
 
-| Provider | Auth | Catatan |
+| Provider | Auth | Notes |
 |---|---|---|
-| `antigravity` (`agy`) | OAuth | Gemini AI Pro & Claude via Google OAuth tanpa API key |
-| `gemini-oauth` | OAuth | Kredensial Google OAuth CLI (`~/.bughunter/google_oauth.json`) |
-| `ollama` | Local | Gratis dan offline melalui daemon lokal `OLLAMA_HOST` |
+| `antigravity` (`agy`) | OAuth | Access Gemini AI Pro & Claude models via Google OAuth (no API key required) |
+| `gemini-oauth` | OAuth | Google OAuth CLI credentials (`~/.bughunter/google_oauth.json`) |
+| `ollama` | Local | 100% free and offline via local `OLLAMA_HOST` daemon |
 
 ### Cloud API & Multi-Model Gateways
 
-| Provider | Auth | Catatan |
+| Provider | Auth | Notes |
 |---|---|---|
-| `groq` | API key | `GROQ_API_KEY`, free tier berkecepatan tinggi |
-| `cerebras` | API key | `CEREBRAS_API_KEY`, inferensi latensi rendah |
-| `deepseek` | API key | `DEEPSEEK_API_KEY`, model DeepSeek V4 |
+| `groq` | API key | `GROQ_API_KEY`, ultra-fast inference with free tier |
+| `cerebras` | API key | `CEREBRAS_API_KEY`, low-latency inference |
+| `deepseek` | API key | `DEEPSEEK_API_KEY`, DeepSeek V4 models |
 | `gemini` | API key | `GEMINI_API_KEY`, Google Gemini API |
 | `claude` | API key | `ANTHROPIC_API_KEY`, Anthropic Claude API |
 | `openai` | API key | `OPENAI_API_KEY`, OpenAI API |
 | `grok` | API key | `XAI_API_KEY`, xAI Grok API |
 | `kimi` | API key | `MOONSHOT_API_KEY`, Moonshot AI API |
 | `mistral` | API key | `MISTRAL_API_KEY`, Mistral AI API |
-| `together` | API key | `TOGETHER_API_KEY`, model open-weight cloud |
-| `perplexity` | API key | `PERPLEXITY_API_KEY`, pencarian web terintegrasi |
+| `together` | API key | `TOGETHER_API_KEY`, open-weight cloud models |
+| `perplexity` | API key | `PERPLEXITY_API_KEY`, search-grounded models |
 | `openrouter` | API key | `OPENROUTER_API_KEY`, multi-model gateway |
 | `orcarouter` | API key | `ORCAROUTER_API_KEY`, multi-model gateway |
 | `fluxion` | API key | `FLUXION_API_KEY`, multi-model gateway |
 | `requesty` | API key | `REQUESTY_API_KEY`, multi-model gateway |
-| `litellm` | API key | `LITELLM_API_KEY`, gateway 100+ provider |
+| `litellm` | API key | `LITELLM_API_KEY`, unified proxy for 100+ providers |
 
 ---
 
@@ -136,9 +148,9 @@ Konfigurasi melalui `breach setup`; daftar model default lengkap tersedia di [Su
 
 ### Tactical Skills (25)
 
-Seluruh 25 skill di [`skills/`](skills/) dapat dilihat dengan `breach skills` dan diinjeksi langsung ke `breach chat` melalui `--skill <name>` atau `/skill <name>`.
+All 25 playbooks in [`skills/`](skills/) can be browsed with `breach skills` and injected directly into `breach chat` via `--skill <name>` or `/skill <name>`.
 
-| Domain | Jumlah | Playbook (`skills/`) |
+| Domain | Count | Playbooks (`skills/`) |
 |---|---|---|
 | Core & Chaining | 3 | `btl-methodology`, `btl-master-hunt`, `exploit-chaining` |
 | Web, API & 0-Day | 5 | `web-exploit-matrix`, `business-logic-assault`, `zero-day-killchain`, `graphql-offensive`, `payload-arsenal` |
@@ -151,70 +163,70 @@ Seluruh 25 skill di [`skills/`](skills/) dapat dilihat dengan `breach skills` da
 
 ### Slash Commands (42)
 
-Dua belas command utama ditampilkan di bawah ini; daftar lengkap 42 command tersedia pada bagian lipat.
+Twelve core commands are highlighted below; expand the dropdown for the complete 42-command catalog in [`commands/`](commands/).
 
-| Kategori | Command | Fungsi |
+| Category | Command | Purpose |
 |---|---|---|
-| Recon | `/recon` | Jalankan pipeline recon lengkap |
-| Recon | `/scope` | Verifikasi aset terhadap scope program |
-| Recon | `/surface` | Urutkan prioritas attack surface target |
-| Hunt | `/hunt` | Jalankan pengujian kerentanan aktif |
-| Hunt | `/autopilot` | Jalankan loop hunt otomatis |
-| Hunt | `/chain` | Rangkai beberapa temuan menjadi eskalasi |
-| Validate & Report | `/validate` | Jalankan 7-Question Gate pada temuan |
-| Validate & Report | `/triage` | Evaluasi cepat kelayakan temuan |
-| Validate & Report | `/report` | Buat draf laporan siap kirim |
-| Utilities | `/pickup` | Lanjutkan sesi hunt sebelumnya |
-| Web3 & OSINT | `/web3-audit` | Audit smart contract Solidity/Rust |
-| Web3 & OSINT | `/token-scan` | Pindai risiko rug pull token |
+| Recon | `/recon` | Run the full reconnaissance pipeline |
+| Recon | `/scope` | Verify target assets against program scope rules |
+| Recon | `/surface` | Rank and prioritize the discovered attack surface |
+| Hunt | `/hunt` | Launch active vulnerability testing |
+| Hunt | `/autopilot` | Run the autonomous end-to-end hunting loop |
+| Hunt | `/chain` | Combine multiple primitives into a high-impact exploit chain |
+| Validate & Report | `/validate` | Run the 7-Question Gate on a candidate finding |
+| Validate & Report | `/triage` | Perform rapid reportability and severity triage |
+| Validate & Report | `/report` | Generate a submission-ready vulnerability report |
+| Utilities | `/pickup` | Resume a previous target hunting session |
+| Web3 & OSINT | `/web3-audit` | Audit Solidity/Rust smart contracts |
+| Web3 & OSINT | `/token-scan` | Scan tokens and meme coins for rug pull mechanics |
 
 <details>
-<summary>Daftar lengkap 42 Slash Commands (<code>commands/</code>)</summary>
+<summary>Full list of 42 Slash Commands (<code>commands/</code>)</summary>
 
-| Kategori | Command | Fungsi |
+| Category | Command | Purpose |
 |---|---|---|
-| Recon | `/recon` | Jalankan pipeline recon lengkap |
-| Recon | `/scope` | Verifikasi aset terhadap scope program |
-| Recon | `/scope-aggregate` | Kumpulkan scope dari berbagai platform |
-| Recon | `/surface` | Urutkan prioritas attack surface target |
-| Recon | `/cloud-recon` | Cari bucket publik dan origin IP |
-| Recon | `/param-discover` | Temukan parameter HTTP tersembunyi |
-| Recon | `/secrets-hunt` | Pindai kebocoran kredensial di kode |
-| Recon | `/takeover` | Periksa kandidat subdomain takeover |
-| Recon | `/portscan` | Pindai port layanan pada target |
-| Recon | `/intel` | Ambil data CVE dan laporan publik |
-| Hunt | `/hunt` | Jalankan pengujian kerentanan aktif |
-| Hunt | `/autopilot` | Jalankan loop hunt otomatis |
-| Hunt | `/chain` | Rangkai beberapa temuan menjadi eskalasi |
-| Hunt | `/bypass-403` | Uji teknik bypass HTTP 403/401 |
-| Hunt | `/cors` | Pindai kesalahan konfigurasi CORS |
-| Hunt | `/crlf` | Uji CRLF dan host header injection |
-| Hunt | `/domxss` | Konfirmasi DOM XSS di browser |
-| Hunt | `/jwt-scan` | Analisis dan uji token JWT offline |
-| Hunt | `/nosqli` | Pindai celah injeksi NoSQL |
-| Hunt | `/oob` | Korelasi callback out-of-band interactsh |
-| Hunt | `/scan-cves` | Sapuan template Nuclei untuk CVE |
-| Hunt | `/sast` | Jalankan aturan Semgrep pada source |
-| Hunt | `/llm-app-audit` | Audit black-box aplikasi agen AI |
-| Hunt | `/llm-redteam` | Uji prompt injection dan jailbreak |
-| Hunt | `/spray` | Password spray dengan pengaman lockout |
-| Validate & Report | `/validate` | Jalankan 7-Question Gate pada temuan |
-| Validate & Report | `/triage` | Evaluasi cepat kelayakan temuan |
-| Validate & Report | `/verify` | Verifikasi ulang bundle PoC secara independen |
-| Validate & Report | `/report` | Buat draf laporan siap kirim |
-| Validate & Report | `/poc` | Susun template bukti reproduksi PoC |
-| Validate & Report | `/screenshot` | Ambil tangkapan layar daftar host aktif |
-| Validate & Report | `/remember` | Simpan temuan ke memori hunt |
-| Utilities | `/arsenal` | Daftar tool eksternal yang terpasang |
-| Utilities | `/dashboard` | Buka dashboard lokal hasil hunt |
-| Utilities | `/memory-gc` | Rotasi dan bersihkan log memori |
-| Utilities | `/oracle` | Urutkan prioritas lead berbasis histori |
-| Utilities | `/pickup` | Lanjutkan sesi hunt sebelumnya |
-| Web3 & OSINT | `/web3-audit` | Audit smart contract Solidity/Rust |
-| Web3 & OSINT | `/token-scan` | Pindai risiko rug pull token |
-| Web3 & OSINT | `/wordlist-gen` | Buat wordlist khusus dari situs target |
-| Web3 & OSINT | `/osint-employees` | Kumpulkan OSINT nama dan email karyawan |
-| Web3 & OSINT | `/breach-check` | Cek wordlist terhadap API HIBP |
+| Recon | `/recon` | Run the full reconnaissance pipeline |
+| Recon | `/scope` | Verify target assets against program scope rules |
+| Recon | `/scope-aggregate` | Aggregate in-scope assets across bug bounty platforms |
+| Recon | `/surface` | Rank and prioritize the discovered attack surface |
+| Recon | `/cloud-recon` | Discover public cloud buckets and origin IPs |
+| Recon | `/param-discover` | Mine hidden HTTP parameters on endpoints |
+| Recon | `/secrets-hunt` | Scan JS bundles and repositories for leaked credentials |
+| Recon | `/takeover` | Detect dangling DNS records and subdomain takeover candidates |
+| Recon | `/portscan` | Scan target hosts for exposed network services |
+| Recon | `/intel` | Fetch CVE intelligence and disclosed bounty reports |
+| Hunt | `/hunt` | Launch active vulnerability testing |
+| Hunt | `/autopilot` | Run the autonomous end-to-end hunting loop |
+| Hunt | `/chain` | Combine multiple primitives into a high-impact exploit chain |
+| Hunt | `/bypass-403` | Test header, path, and verb mutations against HTTP 403/401 |
+| Hunt | `/cors` | Test endpoints for exploitable CORS misconfigurations |
+| Hunt | `/crlf` | Probe for CRLF and host header injection |
+| Hunt | `/domxss` | Confirm DOM XSS sinks and sources in headless browser context |
+| Hunt | `/jwt-scan` | Analyze and test JWT tokens for cryptographic flaws |
+| Hunt | `/nosqli` | Probe endpoints for NoSQL operator and syntax injection |
+| Hunt | `/oob` | Correlate out-of-band callbacks via Interactsh |
+| Hunt | `/scan-cves` | Execute targeted Nuclei CVE sweeps |
+| Hunt | `/sast` | Run static analysis rules against source repositories |
+| Hunt | `/llm-app-audit` | Perform black-box security audits on AI/agent applications |
+| Hunt | `/llm-redteam` | Execute prompt injection and guardrail bypass tests |
+| Hunt | `/spray` | Run lockout-aware credential spraying with safety guards |
+| Validate & Report | `/validate` | Run the 7-Question Gate on a candidate finding |
+| Validate & Report | `/triage` | Perform rapid reportability and severity triage |
+| Validate & Report | `/verify` | Independently re-verify a PoC bundle |
+| Validate & Report | `/report` | Generate a submission-ready vulnerability report |
+| Validate & Report | `/poc` | Scaffold a reproducible Proof-of-Concept bundle |
+| Validate & Report | `/screenshot` | Capture visual evidence across live hosts |
+| Validate & Report | `/remember` | Record confirmed findings into persistent hunt memory |
+| Utilities | `/arsenal` | Check installed external security tools and install hints |
+| Utilities | `/dashboard` | Launch the local hunt telemetry and findings dashboard |
+| Utilities | `/memory-gc` | Rotate and compact hunt-memory JSONL logs |
+| Utilities | `/oracle` | Rank leads using historical pattern memory |
+| Utilities | `/pickup` | Resume a previous target hunting session |
+| Web3 & OSINT | `/web3-audit` | Audit Solidity/Rust smart contracts |
+| Web3 & OSINT | `/token-scan` | Scan tokens and meme coins for rug pull mechanics |
+| Web3 & OSINT | `/wordlist-gen` | Generate target-specific password and path wordlists |
+| Web3 & OSINT | `/osint-employees` | Gather employee and email format OSINT |
+| Web3 & OSINT | `/breach-check` | Rank wordlists via k-anonymity breach frequency |
 
 </details>
 
@@ -222,14 +234,14 @@ Dua belas command utama ditampilkan di bawah ini; daftar lengkap 42 command ters
 
 ## MCP Integrations
 
-Server dan klien MCP berikut menghubungkan `breach` ke proxy HTTP serta API platform bug bounty.
+Break-The-Limit includes Model Context Protocol (MCP) servers and clients to bridge `breach` with HTTP intercepting proxies and bug bounty platforms.
 
-| Integration | Fungsi | Path |
+| Integration | Purpose | Path |
 |---|---|---|
-| Break-The-Limit MCP | Server MCP lokal (`breach mcp serve`) dengan redaksi otomatis | [`bughunter/mcp/bughunter-mcp/`](bughunter/mcp/bughunter-mcp/) |
-| Burp Suite MCP Client | Klien bridge untuk proxy Burp Suite | [`bughunter/mcp/burp-mcp-client/`](bughunter/mcp/burp-mcp-client/) |
-| Caido MCP Client | Klien bridge untuk proxy Caido | [`bughunter/mcp/caido-mcp-client/`](bughunter/mcp/caido-mcp-client/) |
-| HackerOne MCP | Helper API publik HackerOne dan Hacktivity | [`bughunter/mcp/hackerone-mcp/`](bughunter/mcp/hackerone-mcp/) |
+| Break-The-Limit MCP | Local MCP server (`breach mcp serve`) with automatic secret redaction | [`bughunter/mcp/bughunter-mcp/`](bughunter/mcp/bughunter-mcp/) |
+| Burp Suite MCP Client | Bridge client for Burp Suite proxy history and Repeater | [`bughunter/mcp/burp-mcp-client/`](bughunter/mcp/burp-mcp-client/) |
+| Caido MCP Client | Bridge client for Caido proxy traffic and replay | [`bughunter/mcp/caido-mcp-client/`](bughunter/mcp/caido-mcp-client/) |
+| HackerOne MCP | Public HackerOne API and Hacktivity intelligence helper | [`bughunter/mcp/hackerone-mcp/`](bughunter/mcp/hackerone-mcp/) |
 
 ---
 
@@ -239,7 +251,7 @@ Server dan klien MCP berikut menghubungkan `breach` ke proxy HTTP serta API plat
 Break-The-Limit/
 ├── assets/          # Project banner (assets/banner.png)
 ├── bughunter/       # Core breach CLI engine, multi-provider brain, skill loader, chat agent, tools, MCP
-├── skills/          # 25 Break-The-Limit tactical security playbooks
+├── skills/          # 25 Break-The-Limit tactical offensive security playbooks
 ├── commands/        # 42 slash command definitions (+ README.md)
 ├── hooks/           # Harness lifecycle hooks
 ├── rules/           # Hunting & reporting rules
@@ -252,11 +264,11 @@ Break-The-Limit/
 
 ## Disclaimer
 
-Break-The-Limit dikembangkan dan disediakan hanya untuk tujuan edukasi, bug bounty resmi, dan riset keamanan yang sah.
+Break-The-Limit is developed and provided strictly for educational purposes, authorized bug bounty hunting, and lawful security research.
 
-- **No Liability:** Penulis dan kontributor tidak bertanggung jawab atas penyalahgunaan, kerusakan sistem, kehilangan data, atau aktivitas ilegal yang dilakukan menggunakan perangkat lunak ini.
-- **Authorized Use Only:** Perangkat ini hanya boleh digunakan terhadap sistem, aplikasi, dan jaringan yang memiliki izin resmi atau termasuk dalam cakupan program bug bounty yang sah.
-- **User Responsibility:** Pengguna bertanggung jawab penuh memastikan seluruh aktivitas mematuhi hukum dan peraturan yang berlaku.
+- **No Liability:** The authors and contributors assume no liability and are not responsible for any misuse, system damage, data loss, or unlawful activity conducted with this software.
+- **Authorized Use Only:** You may only use this toolkit against systems, applications, and networks for which you have explicit written permission or that fall within the published scope of an authorized bug bounty program.
+- **User Responsibility:** The end user bears full legal responsibility for ensuring all testing complies with applicable local and international laws.
 
 ---
 
