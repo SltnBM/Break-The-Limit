@@ -3,6 +3,7 @@ name: False Positive Report
 about: The scanner flagged something that came back N/A or is not a real vulnerability
 title: "[FP] "
 labels: false-positive
+assignees: shuvonsec
 ---
 
 ## What was flagged?

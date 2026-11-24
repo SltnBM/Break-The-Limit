@@ -13,7 +13,7 @@ Model berikut terdaftar di `ANTIGRAVITY_MODEL_LABELS` pada [`bughunter/tools/goo
 - `claude-opus-5-5-high`, `claude-opus-5-5-medium`, `claude-opus-5-5-low`
 - `gpt-oss-120b-medium`
 
-Untuk melihat daftar model live dari CLI `agy`, jalankan:
+Untuk melihat daftar model live dari provider aktif, jalankan:
 
 ```bash
 breach models
@@ -25,9 +25,10 @@ Model default berikut terdaftar di `LLMClient.DEFAULT_MODELS` pada [`bughunter/b
 
 | Provider | Env Var / Endpoint | Default Model |
 |---|---|---|
-| `antigravity` | Google OAuth (`agy`) | `gemini-3.8-flash-medium` |
+| `antigravity` (`agy`) | Google OAuth | `gemini-3.8-flash-medium` |
 | `gemini-oauth` | Google OAuth CLI | `gemini-3.8-flash-medium` |
-| `ollama` | `OLLAMA_HOST` | Resolved dynamically from local daemon |
+| `9router` / `custom` | `CUSTOM_BASE_URL` | Diambil otomatis dari `GET /v1/models` atau input manual |
+| `ollama` | `OLLAMA_HOST` | Diambil otomatis dari daemon lokal |
 | `groq` | `GROQ_API_KEY` | `openai/gpt-oss-20b` |
 | `cerebras` | `CEREBRAS_API_KEY` | `llama3.3-70b` |
 | `deepseek` | `DEEPSEEK_API_KEY` | `deepseek-v4-flash` |
@@ -42,6 +43,5 @@ Model default berikut terdaftar di `LLMClient.DEFAULT_MODELS` pada [`bughunter/b
 | `openrouter` | `OPENROUTER_API_KEY` | `anthropic/claude-sonnet-4.6` |
 | `orcarouter` | `ORCAROUTER_API_KEY` | `openai/gpt-4o` |
 | `fluxion` | `FLUXION_API_KEY` | `openai/gpt-4o` |
-| `requesty` | `REQUESTY_API_KEY` | `anthropic/claude-sonnet-4-6` |
+| `requesty` | `REQUESTY_API_KEY` | `anthropic/claude-sonnet-4.6` |
 | `litellm` | `LITELLM_API_KEY` | `gpt-4o` |
-| `custom` | `CUSTOM_BASE_URL` | Resolved dynamically or from config |

@@ -8,21 +8,21 @@ This repo is an agent-portable bug bounty plugin for professional hunting across
 
 | Skill | Domain |
 |---|---|
-| `skills/bug-bounty/` | Master workflow — recon to report, all vuln classes, LLM testing, chains |
-| `skills/bb-methodology/` | **Hunting mindset + 5-phase non-linear workflow + tool routing + session discipline** |
-| `skills/web2-recon/` | Subdomain enum, live host discovery, URL crawling, nuclei |
-| `skills/web2-vuln-classes/` | 21 bug classes with bypass tables (SSRF, open redirect, file upload, Agentic AI) |
-| `skills/security-arsenal/` | Payloads, bypass tables, gf patterns, always-rejected list |
-| `skills/web3-audit/` | 10 smart contract bug classes, Foundry PoC template, pre-dive kill signals |
-| `skills/meme-coin-audit/` | Meme coin rug pull detection, token authority checks, bonding curve exploits, LP attacks |
-| `skills/report-writing/` | H1/Bugcrowd/Intigriti/Immunefi report templates, CVSS 3.1, human tone |
-| `skills/triage-validation/` | 7-Question Gate, 4 gates, never-submit list, conditionally valid table |
-| `skills/credential-attack/` | Password spray methodology — when/why, 4-stage pipeline, mode selection, lockout tactics, legal guardrails |
-| `skills/mobile-pentest/` | Android/iOS app pentest — runtime-first proxy workflow, APK/IPA decompile, deeplink injection, WebView bridge |
-| `skills/cicd-security/` | CI/CD pipeline hunting — GitHub Actions injection, secret exfil, self-hosted runner poisoning |
-| `skills/graphql-audit/` | GraphQL hunting — introspection, field suggestions, batching DoS, IDOR via aliasing, injection |
-| `skills/mcp-server-audit/` | MCP server audit — tool poisoning, param→sink injection, missing approval gates, secret leaks, rug-pull/confused-deputy, transport config |
-| `skills/cloud-pentest/` | Post-access cloud exploitation (AWS/GCP/Azure) — IAM enum + privesc, IMDS metadata creds, impersonation, bucket takeover, secrets harvest, impact proof |
+| `skills/btl-master-hunt/` | Master workflow — recon to report, all vuln classes, LLM testing, chains |
+| `skills/btl-methodology/` | **Hunting mindset + 5-phase non-linear workflow + tool routing + session discipline** |
+| `skills/surface-recon/` | Subdomain enum, live host discovery, URL crawling, nuclei |
+| `skills/web-exploit-matrix/` | 21 bug classes with bypass tables (SSRF, open redirect, file upload, Agentic AI) |
+| `skills/payload-arsenal/` | Payloads, bypass tables, gf patterns, always-rejected list |
+| `skills/defi-contract-audit/` | 10 smart contract bug classes, Foundry PoC template, pre-dive kill signals |
+| `skills/token-rugpull-audit/` | Meme coin rug pull detection, token authority checks, bonding curve exploits, LP attacks |
+| `skills/bounty-reporting/` | H1/Bugcrowd/Intigriti/Immunefi report templates, CVSS 3.1, human tone |
+| `skills/impact-gate/` | 7-Question Gate, 4 gates, never-submit list, conditionally valid table |
+| `skills/cred-spray-ops/` | Password spray methodology — when/why, 4-stage pipeline, mode selection, lockout tactics, legal guardrails |
+| `skills/mobile-runtime-audit/` | Android/iOS app pentest — runtime-first proxy workflow, APK/IPA decompile, deeplink injection, WebView bridge |
+| `skills/pipeline-exploitation/` | CI/CD pipeline hunting — GitHub Actions injection, secret exfil, self-hosted runner poisoning |
+| `skills/graphql-offensive/` | GraphQL hunting — introspection, field suggestions, batching DoS, IDOR via aliasing, injection |
+| `skills/mcp-security-audit/` | MCP server audit — tool poisoning, param→sink injection, missing approval gates, secret leaks, rug-pull/confused-deputy, transport config |
+| `skills/cloud-post-exploit/` | Post-access cloud exploitation (AWS/GCP/Azure) — IAM enum + privesc, IMDS metadata creds, impersonation, bucket takeover, secrets harvest, impact proof |
 
 ### Commands (slash commands)
 
@@ -94,8 +94,8 @@ See **`bughunter/tools/README.md`** for the full ~50-tool catalogue. Highlights:
 ### External tool references
 
 - `wordlists/REFERENCES.md` — pointers to SecLists / OneListForAll / fuzz4bounty / PayloadsAllTheThings
-- `skills/security-arsenal/REFERENCES.md` — methodology, writeup archives, dorks, key-verification
-- `skills/security-arsenal/METHODOLOGY_CHEATSHEET.md` — per-vuln quick-check tables
+- `skills/payload-arsenal/REFERENCES.md` — methodology, writeup archives, dorks, key-verification
+- `skills/payload-arsenal/METHODOLOGY_CHEATSHEET.md` — per-vuln quick-check tables
 
 ### MCP Integrations (in `mcp/`)
 

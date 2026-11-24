@@ -253,7 +253,7 @@ def refresh_access_token(creds: dict[str, Any]) -> dict[str, Any]:
     """Refresh an expired access_token using the stored refresh_token."""
     refresh_token = creds.get("refresh_token")
     if not refresh_token:
-        raise RuntimeError("No refresh_token available; please run `breach login` again.")
+        raise RuntimeError("No refresh_token available; please run `bughunter login` again.")
 
     client_id = creds.get("client_id") or OAUTH_CLIENT_ID
     client_secret = creds.get("client_secret") or OAUTH_CLIENT_SECRET
@@ -415,7 +415,7 @@ def interactive_google_oauth_login(no_browser: bool = False, timeout: int = 300)
             self.wfile.write(
                 b"<html><body style='font-family:sans-serif;text-align:center;padding:50px;'>"
                 b"<h2>Authentication successful!</h2>"
-                b"<p>You can close this tab and return to Break-The-Limit.</p>"
+                b"<p>You can close this tab and return to BugHunter.</p>"
                 b"</body></html>"
             )
             done_event.set()

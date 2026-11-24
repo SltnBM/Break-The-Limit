@@ -12,8 +12,8 @@
 
 If you find a security issue in this toolkit itself (not a bug bounty finding on a third-party target), please **do not open a public GitHub issue**.
 
-**Email:** [shuvon@Break-The-Limit.com](mailto:shuvon@Break-The-Limit.com)  
-**CC / general:** [hello@Break-The-Limit.com](mailto:hello@Break-The-Limit.com)  
+**Email:** [shuvon@github.com/SltnBM/Break-The-Limit](mailto:shuvon@github.com/SltnBM/Break-The-Limit)  
+**CC / general:** [hello@github.com/SltnBM/Break-The-Limit](mailto:hello@github.com/SltnBM/Break-The-Limit)  
 **Subject line:** `[SECURITY] Brief description`
 
 Include:

@@ -58,4 +58,4 @@ chore: maintenance (deps, CI, cleanup)
 
 ## Questions?
 
-Open a [GitHub Discussion](https://github.com/SltnBM/Break-The-Limit/discussions) or reach out at [hello@Break-The-Limit.com](mailto:hello@Break-The-Limit.com).
+Open a [GitHub Discussion](https://github.com/Break-The-Limit/Break-The-Limit/discussions) or reach out at [hello@github.com/SltnBM/Break-The-Limit](mailto:hello@github.com/SltnBM/Break-The-Limit).

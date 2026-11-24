@@ -43,7 +43,7 @@ def test_resolve_antigravity_model_defaults():
     assert resolve_antigravity_model(None) == "gemini-4-argon-high"
     assert resolve_antigravity_model("gemini-2.5-pro") == "gemini-4-argon-high"
     assert resolve_antigravity_model("gemini-2.5-flash") == "gemini-3.8-flash-high"
-    assert resolve_antigravity_model("claude-sonnet-4-6") == "claude-sonnet-5-5-medium"
+    assert resolve_antigravity_model("claude-sonnet-5-5-medium") == "claude-sonnet-5-5-medium"
 
 
 def test_credentials_lifecycle(tmp_path, monkeypatch):
@@ -81,4 +81,5 @@ def test_list_antigravity_models_fallback(monkeypatch):
 
     models = list_antigravity_models()
     assert "gemini-3.8-flash-high" in models
+    assert "claude-sonnet-5-5-medium" in models
     assert "claude-sonnet-5-5-medium" in models

@@ -54,7 +54,7 @@ _BOLD = "\033[1m"
 _DIM = "\033[2m"
 _NC = "\033[0m"
 
-_TAG = "Break-The-Limit  ·  Unified Bug Bounty Toolkit"
+_TAG = "Break-The-Limit  ·  breach CLI"
 
 
 def _use_color(stream) -> bool:

@@ -19,7 +19,7 @@ You also need [OpenCode](https://opencode.ai) installed.
 ### Install
 
 ```bash
-git clone https://github.com/SltnBM/Break-The-Limit.git
+git clone https://github.com/Break-The-Limit/Break-The-Limit.git
 cd Break-The-Limit
 chmod +x install_tools.sh && ./install_tools.sh   # scanning tools
 chmod +x install.sh && ./install.sh --opencode    # skills + commands

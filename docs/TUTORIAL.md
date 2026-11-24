@@ -1,4 +1,4 @@
-# A → Z Tutorial — Finding Real Bugs with the bughunter.fun Toolkit
+# A → Z Tutorial — Finding Real Bugs with the github.com/SltnBM/Break-The-Limit Toolkit
 
 This is the short, record-it-once walkthrough that takes you from
 zero to a submission-ready report.
@@ -32,7 +32,7 @@ scanner available and skips the rest gracefully.
 ## A. Install (30 sec)
 
 ```bash
-git clone https://github.com/SltnBM/Break-The-Limit.git
+git clone https://github.com/Break-The-Limit/Break-The-Limit.git
 cd Break-The-Limit
 chmod +x install.sh && ./install.sh
 ```

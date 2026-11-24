@@ -132,6 +132,7 @@ COMMAND_ALIASES = {
     "login": {"login", "auth"},
     "providers": {"providers", "p"},
     "models": {"models", "m"},
+    "skills": {"skills", "sk"},
     "status": {"status", "s"},
     "chat": {"chat", "ask"},
     "recon": {"recon", "r"},
@@ -148,7 +149,9 @@ def _print_quick_help():
     Break-The-Limit (breach) — fast commands
 
     breach help                 Show full help
-    breach setup                Configure your AI provider
+    breach setup                Configure your AI provider (OAuth, 9Router, Custom, Free APIs)
+    breach chat                 Interactive offensive AI shell (no rigid phase lock)
+    breach skills               List & inspect 25 tactical security playbooks
     breach recon target.com     Map the attack surface
     breach hunt target.com      Run the full hunt pipeline
     breach validate "finding"   Run the 7-Question Gate
@@ -156,8 +159,8 @@ def _print_quick_help():
     breach status               Show pipeline status
 
     Short aliases:
-      init=setup   p=providers   m=models   s=status   r=recon
-      h=hunt       v=validate    t=triage   rep=report   c=chain
+      init=setup   p=providers   m=models   sk=skills   s=status   r=recon
+      h=hunt       v=validate    t=triage   rep=report  c=chain
     """).strip())
 
 
@@ -262,19 +265,19 @@ def cmd_setup(args):
     header("Break-The-Limit Setup")
 
     providers = {
-        "1":  ("ollama",     "Ollama     (local, FREE)       — needs ollama running locally"),
-        "2":  ("groq",       "Groq       (cloud, FREE tier)  — needs GROQ_API_KEY"),
-        "3":  ("deepseek",   "DeepSeek   (cloud, very cheap)— needs DEEPSEEK_API_KEY"),
-        "4":  ("claude",     "Claude     (paid)              — needs ANTHROPIC_API_KEY"),
-        "5":  ("openai",     "OpenAI     (paid)              — needs OPENAI_API_KEY"),
-        "6":  ("grok",       "Grok/xAI   (paid)              — needs XAI_API_KEY"),
-        "7":  ("openrouter", "OpenRouter (multi-model)       — needs OPENROUTER_API_KEY"),
-        "8":  ("orcarouter", "OrcaRouter (multi-model)       — needs ORCAROUTER_API_KEY"),
-        "9":  ("fluxion",    "Fluxion    (multi-model)       — needs FLUXION_API_KEY"),
-        "10": ("litellm",     "LiteLLM     (100+ providers)    — uses per-provider keys or LITELLM_API_KEY"),
-        "11": ("requesty",    "Requesty    (multi-model)       — needs REQUESTY_API_KEY"),
+        "1":  ("ollama",      "Ollama      (local, FREE)        — needs ollama running locally"),
+        "2":  ("groq",        "Groq        (cloud, FREE tier)   — needs GROQ_API_KEY"),
+        "3":  ("deepseek",    "DeepSeek    (cloud, very cheap)  — needs DEEPSEEK_API_KEY"),
+        "4":  ("claude",      "Claude      (paid)               — needs ANTHROPIC_API_KEY"),
+        "5":  ("openai",      "OpenAI      (paid)               — needs OPENAI_API_KEY"),
+        "6":  ("grok",        "Grok/xAI    (paid)               — needs XAI_API_KEY"),
+        "7":  ("openrouter",  "OpenRouter  (multi-model)        — needs OPENROUTER_API_KEY"),
+        "8":  ("orcarouter",  "OrcaRouter  (multi-model)        — needs ORCAROUTER_API_KEY"),
+        "9":  ("fluxion",     "Fluxion     (multi-model)        — needs FLUXION_API_KEY"),
+        "10": ("litellm",     "LiteLLM     (100+ providers)     — uses per-provider keys or LITELLM_API_KEY"),
+        "11": ("requesty",    "Requesty    (multi-model)        — needs REQUESTY_API_KEY"),
         "12": ("antigravity", "Antigravity / Gemini (Google OAuth — Gemini AI)"),
-        "13": ("custom",      "Custom      (9Router/Local/vLLM)— custom API base URL & model"),
+        "13": ("custom",      "Custom / 9Router / Free Providers — any OpenAI-compatible Base URL"),
     }
 
     requested_provider = (
@@ -293,7 +296,11 @@ def cmd_setup(args):
         choice = input("Enter number [1]: ").strip() or "1"
         provider = providers.get(choice, ("ollama", ""))[0]
 
-    if provider in ("gemini", "gemini-oauth", "google-oauth", "agy") and not os.environ.get("GEMINI_API_KEY"):
+    if provider == "9router":
+        provider = "custom"
+        if not getattr(args, "setup_base_url", None):
+            args.setup_base_url = "http://localhost:20128/v1"
+    elif provider in ("gemini", "gemini-oauth", "google-oauth", "agy") and not os.environ.get("GEMINI_API_KEY"):
         provider = "antigravity"
 
     requested_model = (
@@ -352,9 +359,25 @@ def cmd_setup(args):
             base_url = req_base
         else:
             default_hint = existing_base or "http://localhost:20128/v1"
-            print(f"\nEnter Custom API Base URL (e.g. http://localhost:20128/v1) [{default_hint}]: ", end="")
+            print("\nCustom / Community Provider Presets:")
+            print("  1) 9Router Local Gateway      (http://localhost:20128/v1)")
+            print("  2) LM Studio Local Server     (http://localhost:1234/v1)")
+            print("  3) vLLM / Llama.cpp Server    (http://localhost:8000/v1)")
+            print("  4) Enter any Custom / Free OpenAI-compatible Base URL")
+            print(f"\nSelect preset (1-3) or paste Base URL directly [{default_hint}]: ", end="")
             entered_base = input().strip()
-            base_url = entered_base or existing_base or "http://localhost:20128/v1"
+            preset_urls = {
+                "1": "http://localhost:20128/v1",
+                "2": "http://localhost:1234/v1",
+                "3": "http://localhost:8000/v1",
+            }
+            if entered_base in preset_urls:
+                base_url = preset_urls[entered_base]
+            elif entered_base == "4":
+                print(f"Enter Custom API Base URL [{default_hint}]: ", end="")
+                base_url = input().strip() or default_hint
+            else:
+                base_url = entered_base or default_hint
 
         base_url = base_url.rstrip("/")
         if base_url.endswith("/chat/completions"):
@@ -419,7 +442,7 @@ def cmd_setup(args):
                     saved_models = cfg.get("models", {})
                     current = saved_models.get("ollama") if isinstance(saved_models, dict) else None
                     default_index = models.index(current) + 1 if current in models else 1
-                    print("\nChoose the Ollama model Break-The-Limit should use:\n")
+                    print("\nChoose the Ollama model BugHunter should use:\n")
                     for index, model_name in enumerate(models, start=1):
                         marker = " (current)" if model_name == current else ""
                         print(f"  {index}) {model_name}{marker}")
@@ -446,7 +469,7 @@ def cmd_setup(args):
                 if current:
                     current = resolve_antigravity_model(current)
                 default_index = models.index(current) + 1 if current in models else 1
-                print("\nChoose the Antigravity / Gemini model Break-The-Limit should use:\n")
+                print("\nChoose the Antigravity / Gemini model BugHunter should use:\n")
                 for index, model_name in enumerate(models, start=1):
                     label = ANTIGRAVITY_MODEL_LABELS.get(model_name, "")
                     label_str = f" — {label}" if label else ""
@@ -468,7 +491,7 @@ def cmd_setup(args):
             current = saved_models.get("custom") if isinstance(saved_models, dict) else None
             if models:
                 default_index = models.index(current) + 1 if current in models else 1
-                print("\nChoose the Custom Endpoint model Break-The-Limit should use:\n")
+                print("\nChoose the Custom Endpoint model BugHunter should use:\n")
                 for index, model_name in enumerate(models, start=1):
                     marker = " (current)" if model_name == current else ""
                     print(f"  {index:>2}) {model_name}{marker}")
@@ -553,7 +576,7 @@ def cmd_login(args):
             info(f"Tier: {tier} | Project: {proj}")
             info(f"Credentials file: {creds.get('_source_path', BUGHUNTER_OAUTH_FILE)}")
         else:
-            warn("Not logged in with Google OAuth. Run: breach login")
+            warn("Not logged in with Google OAuth. Run: bughunter login")
         return
 
     no_browser = bool(getattr(args, "no_browser", False))
@@ -653,7 +676,7 @@ def cmd_providers(args):
         print(f"  {BOLD}{prov:<14}{NC} {tier[prov]:<16} {status:<32} {DIM}{note}{NC}{marker}")
 
     print(f"\n  Config: {CONFIG}")
-    print(f"  Change: breach setup\n")
+    print(f"  Change: ./engine.py setup\n")
 
 
 def cmd_models(args):
@@ -662,7 +685,7 @@ def cmd_models(args):
     provider = getattr(args, "provider", None) or cfg.get("provider")
     client = _get_client(provider)
     if not client.available:
-        err(f"Provider '{client.provider}' not available. Run: breach setup")
+        err(f"Provider '{client.provider}' not available. Run: ./engine.py setup")
         return
     models = client.list_models()
     info(f"Provider: {client.description}")
@@ -718,7 +741,7 @@ def cmd_recon(args):
     if result:
         print(f"\n{result}")
     else:
-        warn("AI analysis returned no output — check provider with: breach providers")
+        warn("AI analysis returned no output — check provider with: ./engine.py providers")
 
 
 def cmd_hunt(args):
@@ -798,7 +821,7 @@ def cmd_report(args):
             findings_dir = str(targets[-1])
             info(f"Using findings dir: {findings_dir}")
         else:
-            err("No findings dir found. Use: breach report --findings-dir findings/<target>")
+            err("No findings dir found. Use: ./engine.py report --findings-dir findings/<target>")
             sys.exit(1)
 
     header("Report Writer")
@@ -844,7 +867,7 @@ def cmd_chain(args):
     system = load_agent_prompt("chain-builder")
     client = _get_client()
     if not client.available:
-        err("No AI provider available. Run: breach setup")
+        err("No AI provider available. Run: ./engine.py setup")
         sys.exit(1)
     sys.path.insert(0, str(HERE))
     from brain import BRAIN_SYSTEM  # noqa: PLC0415
@@ -852,6 +875,53 @@ def cmd_chain(args):
                          f"Build an exploit chain starting from this bug:\n\n{finding}")
     if result:
         print(f"\n{result}")
+
+
+def cmd_skills(args):
+    """List, inspect, or recommend Break-The-Limit security playbooks."""
+    sys.path.insert(0, str(HERE))
+    from tools.skill_loader import list_skills, load_skill, recommend_skills  # noqa: PLC0415
+
+    action = (getattr(args, "skills_action", None) or "list").strip().lower()
+    query = (getattr(args, "skills_query", None) or "").strip()
+
+    if action == "show" or (action not in ("list", "recommend") and not query):
+        target_name = query if action == "show" else action
+        if not target_name:
+            err("Usage: breach skills show <skill-name>")
+            return
+        sk = load_skill(target_name)
+        if not sk:
+            err(f"Skill '{target_name}' not found. Run: breach skills")
+            return
+        header(f"Skill: {sk['name']} ({sk['domain']})")
+        if sk["description"]:
+            print(f"  {DIM}{sk['description']}{NC}\n")
+        lines = sk["body"].splitlines()
+        preview = "\n".join(lines[:45])
+        print(preview)
+        if len(lines) > 45:
+            print(f"\n  {DIM}... ({len(lines) - 45} more lines in {sk['path']}){NC}")
+        print(f"\n  {GREEN}Inject into chat:{NC} breach chat --skill {sk['name']}\n")
+        return
+
+    if action == "recommend":
+        header("Recommended Tactical Skills")
+        recs = recommend_skills(query, limit=6)
+        for item in recs:
+            print(f"  {GREEN}•{NC} {BOLD}{item['name']:<24}{NC} {DIM}{item['reason']}{NC}")
+        if recs:
+            names = ",".join(r["name"] for r in recs[:2])
+            print(f"\n  {CYAN}Launch chat with top skills:{NC} breach chat --skill {names}\n")
+        return
+
+    all_skills = list_skills()
+    header(f"Break-The-Limit Tactical Skills ({len(all_skills)})")
+    for item in all_skills:
+        print(f"  {BOLD}{item['name']:<24}{NC} {CYAN}{item['domain']:<22}{NC} {DIM}{item['description'][:58]}{NC}")
+    print(f"\n  {DIM}Inspect a skill:{NC}   breach skills show <name>")
+    print(f"  {DIM}Recommend skills:{NC}  breach skills recommend <tech-or-vuln>")
+    print(f"  {DIM}Load in AI chat:{NC}   breach chat --skill <name1,name2>\n")
 
 
 def cmd_chat(args):
@@ -870,12 +940,28 @@ def cmd_chat(args):
         run_chat_turn,
         save_chat_session,
     )
+    from tools.skill_loader import (  # noqa: PLC0415
+        build_skill_prompt_context,
+        list_skills,
+        load_skill,
+    )
 
     auto_approve = bool(getattr(args, "auto", False))
     target = (getattr(args, "target", None) or "").strip() or None
     phase = getattr(args, "phase", None)
+    raw_skills = (getattr(args, "skill", None) or "").strip()
+    active_skills: list[str] = []
+    skill_context = ""
     history: list[dict] = []
     target_context = ""
+
+    def _refresh_skills(names: list[str]) -> None:
+        nonlocal active_skills, skill_context
+        skill_context, active_skills = build_skill_prompt_context(names)
+
+    if raw_skills:
+        requested = [s.strip() for s in raw_skills.split(",") if s.strip()]
+        _refresh_skills(requested)
 
     def _activate_target(new_target: str, explicit_phase: int | None = None) -> None:
         nonlocal target, phase, history, target_context
@@ -898,13 +984,15 @@ def cmd_chat(args):
 
     ok(f"Connected: {client.description}")
     info("Tools enabled: web_search, http_fetch, run_command, read_file, list_dir")
+    if active_skills:
+        ok(f"Active tactical skills: {', '.join(active_skills)}")
     if target:
         _activate_target(target, explicit_phase=phase)
     elif phase is not None and phase in PHASE_DESCRIPTIONS:
         info(f"Starting at Phase {phase} ({PHASE_DESCRIPTIONS[phase]})")
     print(
-        f"{DIM}Commands: /phase <0-5>, /target <domain>, /auto ({'ON' if auto_approve else 'OFF'}), "
-        f"/clear, /help, exit{NC}\n"
+        f"{DIM}Commands: /skill <name|clear>, /skills, /target <domain>, /phase <0-5|off>, "
+        f"/auto ({'ON' if auto_approve else 'OFF'}), /clear, /help, exit{NC}\n"
     )
 
     def _confirm_tool(tool_name: str, tool_args: dict) -> str:
@@ -944,16 +1032,48 @@ def cmd_chat(args):
             auto_approve = not auto_approve
             ok(f"Tool auto-approve: {'ON' if auto_approve else 'OFF'}")
             continue
+        if user_input.lower() == "/skills":
+            all_sk = list_skills()
+            print(f"  {BOLD}Active skills:{NC} {', '.join(active_skills) if active_skills else '(none)'}")
+            print(f"  {BOLD}Available ({len(all_sk)}):{NC} " + ", ".join(s["name"] for s in all_sk))
+            print(f"  {DIM}Use /skill <name> to load a skill or /skill clear to unload all.{NC}")
+            continue
+        if user_input.lower().startswith("/skill"):
+            arg_sk = user_input[6:].strip()
+            if not arg_sk:
+                print(f"Active skills: {', '.join(active_skills) if active_skills else '(none)'} — Usage: /skill <name|clear>")
+            elif arg_sk.lower() in ("clear", "off", "none"):
+                _refresh_skills([])
+                ok("Cleared all active tactical skills")
+            else:
+                requested = [s.strip() for s in arg_sk.split(",") if s.strip()]
+                valid_add: list[str] = list(active_skills)
+                for rname in requested:
+                    sk = load_skill(rname)
+                    if sk:
+                        if sk["name"] not in valid_add:
+                            valid_add.append(sk["name"])
+                    else:
+                        warn(f"Unknown skill '{rname}' (type /skills to see all 25)")
+                _refresh_skills(valid_add)
+                if active_skills:
+                    ok(f"Active tactical skills: {', '.join(active_skills)}")
+            continue
         if user_input.lower().startswith("/phase"):
-            arg_str = user_input[6:].strip()
-            if arg_str.isdigit() and int(arg_str) in PHASE_DESCRIPTIONS:
+            arg_str = user_input[6:].strip().lower()
+            if arg_str in ("off", "none", "free"):
+                phase = None
+                if target:
+                    save_chat_session(target, phase, history)
+                ok("Phase lock disabled (free interactive mode)")
+            elif arg_str.isdigit() and int(arg_str) in PHASE_DESCRIPTIONS:
                 phase = int(arg_str)
                 if target:
                     save_chat_session(target, phase, history)
                 ok(f"Active phase: Phase {phase} — {PHASE_DESCRIPTIONS[phase]}")
             else:
                 lines = [f"  {k}: {v}" for k, v in PHASE_DESCRIPTIONS.items()]
-                print("Usage: /phase <0-5>\n" + "\n".join(lines))
+                print("Usage: /phase <0-5|off>\n" + "\n".join(lines))
             continue
         if user_input.lower().startswith("/target"):
             new_t = user_input[7:].strip()
@@ -965,7 +1085,7 @@ def cmd_chat(args):
         if user_input.lower() == "/help":
             print(
                 f"  {BOLD}Tools:{NC} web_search, http_fetch, run_command, read_file, list_dir\n"
-                f"  {BOLD}Commands:{NC} /phase <0-5>, /target <domain>, /auto, /clear, exit"
+                f"  {BOLD}Commands:{NC} /skill <name|clear>, /skills, /target <domain>, /phase <0-5|off>, /auto, /clear, exit"
             )
             continue
 
@@ -979,6 +1099,7 @@ def cmd_chat(args):
             phase=phase,
             target=target,
             target_context=target_context,
+            skill_context=skill_context,
         )
         if reply:
             print(f"\n{reply}\n")
@@ -1023,7 +1144,7 @@ def cmd_status(args):
         model_note = f" | model: {model}" if model else " | model: automatic"
         print(f"{GREEN}{client.description}{model_note}{NC}")
     else:
-        print(f"{RED}not configured{NC} — run: breach setup")
+        print(f"{RED}not configured{NC} — run: ./engine.py setup")
     print()
 
 
@@ -1077,7 +1198,7 @@ def _print_banner():
     print()
     print(f"  {W}Break-The-Limit{NC}  {G3}·{NC}  {G1}breach CLI{NC}")
     print(f"  {G3}github.com/{G2}SltnBM{G3}/Break-The-Limit{NC}")
-    print(f"  {G3}free · open · authorized security testing{NC}")
+    print(f"  {G3}free · open · offensive security & bug bounty toolkit{NC}")
     print()
 
 
@@ -1087,25 +1208,24 @@ def main():
     argv = _normalize_cli_argv(sys.argv[1:])
     parser = argparse.ArgumentParser(
         prog="breach",
-        description="Break-The-Limit CLI (breach) — works without Claude Code",
+        description="Break-The-Limit CLI (breach) — terminal-native AI offensive security toolkit",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""
         Free setup (zero subscription):
           curl -fsSL https://ollama.ai/install.sh | sh
           ollama pull qwen2.5:14b
           breach setup
-          breach recon target.com
+          breach chat
 
-        Free cloud (Groq — very fast):
-          export GROQ_API_KEY=gsk_...
-          breach recon target.com
+        Custom / 9Router / Free community providers:
+          breach setup --provider custom --base-url http://localhost:20128/v1
 
         Switch providers anytime:
           breach setup
         """),
     )
     parser.add_argument("--provider", "-p",
-                        help="Force provider: ollama / gemini-oauth / antigravity / gemini / groq / deepseek / claude / openai / grok / openrouter / orcarouter / fluxion / litellm / requesty / custom")
+                        help="Force provider: ollama / gemini-oauth / antigravity / gemini / groq / deepseek / claude / openai / grok / openrouter / orcarouter / fluxion / litellm / requesty / 9router / custom")
     parser.add_argument("--model", "-m", help="Force model for this invocation (for example qwen3:14b)")
     parser.add_argument("--no-banner", action="store_true", help="Suppress banner")
 
@@ -1116,7 +1236,7 @@ def main():
         "--provider", dest="setup_provider",
         choices=["ollama", "groq", "deepseek", "claude", "openai", "grok",
                  "openrouter", "orcarouter", "fluxion", "litellm", "requesty",
-                 "gemini", "gemini-oauth", "google-oauth", "antigravity", "agy", "custom"],
+                 "gemini", "gemini-oauth", "google-oauth", "antigravity", "agy", "9router", "custom"],
         help="Provider to persist (skips the provider prompt)",
     )
     p_setup.add_argument(
@@ -1138,11 +1258,15 @@ def main():
     p_login.add_argument("--logout", action="store_true", help="Remove saved Google OAuth credentials")
     sub.add_parser("providers", aliases=["p"], help="Show all providers + API key status")
     sub.add_parser("models",    aliases=["m"], help="List available models for active provider")
+    p_skills = sub.add_parser("skills", aliases=["sk"], help="List, inspect, or recommend 25 tactical security skills")
+    p_skills.add_argument("skills_action", nargs="?", default="list", help="list | show | recommend | <skill-name>")
+    p_skills.add_argument("skills_query", nargs="?", default="", help="Skill name or target signal keyword")
     sub.add_parser("status",    aliases=["s"], help="Show hunt pipeline status")
     p_chat = sub.add_parser("chat", aliases=["ask"], help="Interactive agentic AI shell (network, web search, shell)")
     p_chat.add_argument("--auto", action="store_true", help="Auto-approve tool execution without prompting")
-    p_chat.add_argument("--phase", type=int, choices=[0, 1, 2, 3, 4, 5], help="Start directly at Bug Hunter Phase 0-5")
+    p_chat.add_argument("--phase", type=int, choices=[0, 1, 2, 3, 4, 5], help="Optional: lock into Phase 0-5")
     p_chat.add_argument("--target", "-t", help="Target domain to load existing recon/findings & resume session")
+    p_chat.add_argument("--skill", "-s", help="Comma-separated tactical skills to inject (e.g. js-deep-miner,zero-day-killchain)")
 
     p_recon = sub.add_parser("recon", aliases=["r"], help="Recon + AI surface analysis")
     p_recon.add_argument("target", help="Target domain or IP")
@@ -1191,24 +1315,37 @@ def main():
         if not os.environ.get(env_var) and cfg.get(env_var):
             os.environ[env_var] = cfg[env_var]
 
-    quiet_cmds = {"status", "providers", "models", "mcp", "login", "auth", None}
+    quiet_cmds = {"status", "providers", "models", "skills", "sk", "mcp", "login", "auth", None}
     if not getattr(args, "no_banner", False) and args.command not in quiet_cmds:
         _print_banner()
 
     dispatch = {
         "setup":     cmd_setup,
+        "init":      cmd_setup,
         "login":     cmd_login,
         "auth":      cmd_login,
         "providers": cmd_providers,
+        "p":         cmd_providers,
         "models":    cmd_models,
+        "m":         cmd_models,
+        "skills":    cmd_skills,
+        "sk":        cmd_skills,
         "recon":     cmd_recon,
+        "r":         cmd_recon,
         "hunt":      cmd_hunt,
+        "h":         cmd_hunt,
         "validate":  cmd_validate,
+        "v":         cmd_validate,
         "triage":    cmd_triage,
+        "t":         cmd_triage,
         "report":    cmd_report,
+        "rep":       cmd_report,
         "chain":     cmd_chain,
+        "c":         cmd_chain,
         "chat":      cmd_chat,
+        "ask":       cmd_chat,
         "status":    cmd_status,
+        "s":         cmd_status,
         "mcp":       cmd_mcp,
     }
 

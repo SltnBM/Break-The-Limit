@@ -14,7 +14,7 @@ api_keys.txt
 .private/
 
 # Nested local clones / sub-repos (not tracked)
-# Break-The-Limit/
+Break-The-Limit/
 
 # Local control sockets (short paths for AF_UNIX)
 .ctl/

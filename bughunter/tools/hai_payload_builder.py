@@ -223,7 +223,7 @@ Excessive data exposure in API response could be leveraged for social engineerin
 
 # ════════════════════════════════════════════════════════════════════════════════
 # VAPT PAYLOAD LIBRARY
-# Source: Break-The-Limit v2.1.0 + OBSIDIAN extensions
+# Source: Break-The-Limit/Break-The-Limit v2.1.0 + OBSIDIAN extensions
 # ════════════════════════════════════════════════════════════════════════════════
 
 VAPT_PAYLOADS = {

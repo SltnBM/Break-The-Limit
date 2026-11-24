@@ -198,7 +198,7 @@ chmod +x install.sh && ./install.sh   # reinstall skills + commands
 
 **Where do I report bugs or ask for help?**
 
-Open an issue on [GitHub](https://github.com/SltnBM/Break-The-Limit/issues). Include:
+Open an issue on [GitHub](https://github.com/Break-The-Limit/Break-The-Limit/issues). Include:
 - What command you ran
 - What you expected to happen
 - What actually happened

@@ -356,7 +356,7 @@ def main():
     q = f'''mutation {{
       shareReportViaEmail(input: {{
         id: "{gid}"
-        email: "Break-The-Limit@example.com"
+        email: "researcher@example.com"
         message: "IDOR_TEST"
       }}) {{
         report {{ id }}
