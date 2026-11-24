@@ -41,14 +41,14 @@ Defaults:
   ./install.sh                    Install for Claude Code globally
 
 Standalone (no subscription needed):
-  ./install.sh --agent standalone Install or update the 'bughunter' system command
+  ./install.sh --agent standalone Install or update the 'breach' system command
   ./install.sh --agent mcp        Print MCP client config + install mcp Python SDK hint
                                   After install, type from anywhere:
-                                    bughunter help
-                                    bughunter setup
-                                    bughunter login
-                                    bughunter recon target.com
-                                    bughunter h target.com
+                                    breach help
+                                    breach setup
+                                    breach login
+                                    breach recon target.com
+                                    breach h target.com
 
 Examples:
   ./install.sh --agent antigravity Install Antigravity / Gemini skills, rules & agents globally (~/.gemini/config)
@@ -356,7 +356,7 @@ install_standalone() {
         echo "[!] Could not install or update $target" >&2
         echo "    Try: sudo ./install.sh --agent standalone" >&2
         echo "    Or add this to ~/.bashrc / ~/.zshrc:"
-        echo "    alias bughunter='python3 $engine'"
+        echo "    alias breach='python3 $engine'"
         return 1
     fi
 
@@ -395,12 +395,13 @@ install_standalone() {
     echo "════════════════════════════════════════════════════"
     echo "  Done! Type from anywhere:"
     echo ""
-    echo "    bughunter setup"
-    echo "    bughunter models"
-    echo "    bughunter recon target.com"
-    echo "    bughunter hunt  target.com"
-    echo "    bughunter validate \"<finding>\""
-    echo "    bughunter chat"
+    echo "    breach setup"
+    echo "    breach models"
+    echo "    breach skills"
+    echo "    breach recon target.com"
+    echo "    breach hunt  target.com"
+    echo "    breach validate \"<finding>\""
+    echo "    breach chat"
     echo "════════════════════════════════════════════════════"
     echo ""
 }
@@ -412,11 +413,11 @@ install_mcp() {
     echo ""
     echo "Server entry:"
     echo "  python3 $MCP_SRC/bughunter-mcp/server.py"
-    echo "  # or: bughunter mcp serve   (after standalone install)"
+    echo "  # or: breach mcp serve   (after standalone install)"
     echo ""
     echo "Doctor / tool catalog:"
-    echo "  bughunter mcp doctor"
-    echo "  bughunter mcp tools"
+    echo "  breach mcp doctor"
+    echo "  breach mcp tools"
     echo ""
     echo "Python SDK:"
     echo "  pip install 'mcp>=2.2.0'"

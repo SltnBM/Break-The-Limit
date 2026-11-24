@@ -38,21 +38,118 @@ Break-The-Limit (`breach`) is a terminal-native AI offensive security and bug bo
 
 ## Quick Start
 
-Install inside a Python virtual environment or use the standalone installer to register `breach` globally on your system.
+Get `breach` running in under 60 seconds:
 
 ```bash
+git clone https://github.com/SltnBM/Break-The-Limit.git && cd Break-The-Limit
+./install.sh --agent standalone
+breach setup && breach chat
+```
+
+---
+
+## Installation Guide
+
+Choose the installation method that matches your environment and workflow.
+
+### 1. Prerequisites
+
+| Requirement | Minimum Version | Purpose |
+|---|---|---|
+| Python | `3.10+` | Core `breach` engine, skill loader, and interactive agent |
+| Git | `2.x+` | Cloning and updating the repository |
+| `pip` / `venv` | Standard Python packaging | Installing dependencies (`requests`, `pytest`, optional `ollama` / `mcp`) |
+| External Recon Tools *(optional)* | Checked via `breach arsenal` | `subfinder`, `httpx`, `nuclei`, `ffuf`, `katana`, `dalfox`, `sqlmap`, etc. |
+
+### 2. Option A — System-Wide Standalone CLI (Recommended)
+
+Installs `breach` globally into `/usr/local/bin/breach` (or `~/.local/bin/breach`) and installs Python dependencies automatically so you can run `breach` from any directory without activating a virtual environment.
+
+```bash
+# 1. Clone the repository
 git clone https://github.com/SltnBM/Break-The-Limit.git
 cd Break-The-Limit
+
+# 2. Run the standalone installer
+chmod +x install.sh
+./install.sh --agent standalone
+
+# 3. If ~/.local/bin is not in your PATH, add it:
+export PATH="$HOME/.local/bin:$PATH"
+
+# 4. Verify the installation
+breach --help
+breach skills
+```
+
+### 3. Option B — Python Virtual Environment (Isolated / Development)
+
+Use this method on Linux distributions with PEP 668 (`externally-managed-environment`, such as Kali Linux, Ubuntu 24.04+, or Arch) or when developing and running the test suite.
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/SltnBM/Break-The-Limit.git
+cd Break-The-Limit
+
+# 2. Create and activate an isolated virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
+
+# 3. Install Break-The-Limit in editable mode with test dependencies
+pip install --upgrade pip
 pip install -e ".[test]"
 
-# Optional standalone global install (without manual venv activation):
-# ./install.sh --agent standalone
+# 4. Verify CLI entrypoints and test suite
+breach --help
+breach-agent --help
+pytest -q
+```
 
-# Configure your AI provider (9Router / Custom / Google OAuth / Ollama / Groq)
+> **Tip:** To install the editable `breach` entrypoint straight into `~/.local/bin` without activating a virtualenv every time on PEP 668 systems:
+> ```bash
+> pip install --user --break-system-packages -e .
+> ```
+
+### 4. Option C — AI Coding Harness Plugin Install
+
+In addition to the standalone `breach` CLI, you can install the 25 tactical skills, 42 slash commands, rules, and specialized agents directly into external AI coding harnesses:
+
+| Target Harness | Global Install Command | Project-Local Install Command | Destination (Global) |
+|---|---|---|---|
+| Antigravity / Gemini | `./install.sh --agent antigravity` | `./install.sh --agent antigravity --project` | `~/.gemini/config/` |
+| Claude Code | `./install.sh --agent claude` | `./install.sh --agent claude --project` | `~/.claude/` |
+| OpenCode | `./install.sh --agent opencode` | `./install.sh --agent opencode --project` | `~/.config/opencode/` |
+| Codex | `./install.sh --agent codex` | `./install.sh --agent codex --project` | `~/.codex/` |
+| Pi Agent | `./install.sh --agent pi` | `./install.sh --agent pi --project` | `~/.pi/agent/` |
+| Shared `.agents` | `./install.sh --agent agents` | `./install.sh --agent agents --project` | `~/.agents/skills/` |
+| MCP Server Setup | `./install.sh --agent mcp` | — | Prints MCP config & installs `mcp>=2.2.0` |
+| All Supported Targets | `./install.sh --agent all` | — | Installs across all harnesses above |
+
+### 5. Post-Install: Provider Setup & External Arsenal Check
+
+After installing `breach`, configure your AI provider and inspect your external offensive tool binaries:
+
+```bash
+# Configure AI provider (9Router, Custom Free Provider, Google OAuth, Ollama, Groq, etc.)
 breach setup
-breach chat
+
+# Check installed external recon & exploitation tools (nuclei, subfinder, httpx, ffuf, etc.)
+breach arsenal
+```
+
+### 6. Updating & Uninstalling
+
+```bash
+# Update an existing clone
+cd Break-The-Limit
+git pull origin main
+./install.sh --agent standalone
+
+# Uninstall standalone CLI (preserves ~/.bughunter/config.json)
+./uninstall.sh --agent standalone
+
+# Uninstall everything and purge saved provider configuration
+./uninstall.sh --agent all --purge-config --yes
 ```
 
 ---
